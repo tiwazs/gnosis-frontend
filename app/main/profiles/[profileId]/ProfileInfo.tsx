@@ -1,9 +1,11 @@
-'use client'
-
-import { Profile } from '@prisma/client'
-import React, { use } from 'react'
+import { useEffect, useState } from 'react';
 import ImageList from './ImageList'
 import NewImageDialog from './NewImageDialog'
+
+interface Profile {
+    name: string;
+    bio: string;
+}
 
 interface ProfileInfoProps {
     profileId: string
@@ -15,19 +17,29 @@ const getProfile = async (profileId: string, apikey: string) => {
         method: 'GET',
         headers: {
             "ngrok-skip-browser-warning": "69420",
-                'Authorization': apikey
-        }})
+            'Authorization': apikey
+        }
+    });
     const profile: Profile = await response.json();
     return profile;
 }
 
-export default function ProfileInfo( {profileId, apikey} : ProfileInfoProps ) {
-    const profile = use( getProfile(profileId, apikey) );
+export default function ProfileInfo({ profileId, apikey }: ProfileInfoProps) {
+    const [profile, setProfile] = useState<Profile | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        getProfile(profileId, apikey).then(data => {
+            setProfile(data);
+            setLoading(false);
+        });
+    }, [profileId, apikey]);
 
     const capitalize = (text: string) => {
         return text.charAt(0).toUpperCase() + text.slice(1);
     }
-    
+
+    if (loading || !profile) return <div>Loading...</div>;
     return (
         <div className='flex flex-col md:grid md:grid-cols-4'>
             <div className='md:col-span-1'>

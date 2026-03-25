@@ -22,7 +22,7 @@ const GroupsPage = () => {
     return (
         <div className="bg-[#221c28]">              
             <div className='flex justify-center'>
-                <h5 className='text-gray-300 text-lg'>Groups</h5>
+                <h5 className='text-lg'>Groups</h5>
             </div>
             <div className='flex'>
                 <NewGroupDialog userId={session.userId as string} apikey={session.apikey as string} />

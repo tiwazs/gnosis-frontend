@@ -1,5 +1,5 @@
 # Build step
-FROM node:16.13.2 as builder
+FROM node:16.20.0 as builder
 
 WORKDIR /app
 
@@ -30,7 +30,7 @@ RUN npm run build
 RUN npx prisma generate
 
 # Production step
-FROM node:16.13.2-alpine
+FROM node:16.20.0-alpine
 
 WORKDIR /app
 

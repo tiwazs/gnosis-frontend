@@ -1,5 +1,5 @@
 import { Group } from '@prisma/client';
-import React, { use } from 'react'
+import React from 'react'
 import { useQuery } from 'react-query';
 import GroupOption from './GroupOption';
 

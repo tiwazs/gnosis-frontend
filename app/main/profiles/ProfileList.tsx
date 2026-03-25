@@ -1,5 +1,5 @@
 import { Profile } from '@prisma/client';
-import React, { use } from 'react'
+import React from 'react'
 import { useQuery } from 'react-query';
 import ProfileOption from './ProfileOption';
 

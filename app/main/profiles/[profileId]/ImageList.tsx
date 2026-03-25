@@ -1,5 +1,5 @@
 import { Image } from '@prisma/client';
-import React, { use, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useQuery } from 'react-query';
 import ImageOption from './ImageOption';
 

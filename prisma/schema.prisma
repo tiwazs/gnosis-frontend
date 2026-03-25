@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -23,7 +23,6 @@ model Account {
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
-  @@index([userId], map: "Account_userId_fkey")
 }
 
 model Group {
@@ -37,8 +36,6 @@ model Group {
   allImagesCoded Boolean        @default(false)
   User           User           @relation(fields: [userId], references: [id])
   ProfileGroup   ProfileGroup[]
-
-  @@index([userId], map: "Group_userId_fkey")
 }
 
 model Image {
@@ -51,8 +48,6 @@ model Image {
   name      String
   path      String
   Profile   Profile  @relation(fields: [profileId], references: [id])
-
-  @@index([profileId], map: "Image_profileId_fkey")
 }
 
 model Profile {
@@ -65,8 +60,6 @@ model Profile {
   Image        Image[]
   User         User           @relation(fields: [userId], references: [id])
   ProfileGroup ProfileGroup[]
-
-  @@index([userId], map: "Profile_userId_fkey")
 }
 
 model ProfileGroup {
@@ -77,9 +70,6 @@ model ProfileGroup {
   updatedAt DateTime
   Group     Group    @relation(fields: [groupId], references: [id])
   Profile   Profile  @relation(fields: [profileId], references: [id])
-
-  @@index([groupId], map: "ProfileGroup_groupId_fkey")
-  @@index([profileId], map: "ProfileGroup_profileId_fkey")
 }
 
 model Session {
@@ -88,8 +78,6 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId], map: "Session_userId_fkey")
 }
 
 model User {

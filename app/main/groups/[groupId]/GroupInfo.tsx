@@ -1,7 +1,7 @@
 'use client'
 
 import { Group } from '@prisma/client'
-import React, { use, useState } from 'react'
+import React, { useState } from 'react'
 import { BiBarcodeReader } from 'react-icons/bi'
 import { BsExclamationLg } from 'react-icons/bs'
 import { GiCheckMark } from 'react-icons/gi'
