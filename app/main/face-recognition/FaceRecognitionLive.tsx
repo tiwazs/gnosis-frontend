@@ -1,7 +1,7 @@
 'use client';
 
 import { useSession } from 'next-auth/react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { AiOutlinePlayCircle } from 'react-icons/ai';
 import { BiStopCircle } from 'react-icons/bi';
 import { FaceProcessingStream } from '../../../components/FaceProcessingStream'
@@ -14,16 +14,21 @@ interface FaceRecognitionLiveProps {
 function FaceRecognitionLive({groupId}: FaceRecognitionLiveProps): any {
     const [videoStream, setVideoStream] = useState<MediaStream>();
     const { data: session, status } = useSession({ required: true });
-    const faceRecognitionStream: FaceProcessingStream = new FaceProcessingStream(`${process.env.NEXT_PUBLIC_API_URL}/api`);
+    const faceRecognitionStream = useRef(new FaceProcessingStream(`${process.env.NEXT_PUBLIC_API_URL}/api`)).current;
 
     const startVideo = async () => {
-        console.log('start video' + JSON.stringify(session) + " group "  + groupId);
-        const stream:MediaStream = await faceRecognitionStream.start(session?.apikey as string, {
-            origin: { name: "frontend", args: null },
-            processor: { name: "recognizer-api", args: { type: "recognition", groupId: groupId } },
-            destination: { name: "frontend", args: null },
-        });
-        setVideoStream(stream);
+        try {
+            console.log('start video' + JSON.stringify(session) + " group "  + groupId);
+            const stream:MediaStream = await faceRecognitionStream.start(session?.apikey as string, {
+                origin: { name: "frontend", args: null },
+                processor: { name: "recognizer-api", args: { type: "recognition", groupId: groupId } },
+                destination: { name: "frontend", args: null },
+            });
+            setVideoStream(stream);
+        } catch (error) {
+            console.error(error);
+            alert(error);
+        }
     };
 
     const stopVideo = async () => {
@@ -35,8 +40,8 @@ function FaceRecognitionLive({groupId}: FaceRecognitionLiveProps): any {
     <>
         <div className='flex flex-col'>
             {videoStream ? 
-                <VideoElement className='video-stage' srcObject={videoStream} autoPlay={true} controls={true}/>
-                : <video className='video-stage'/>}
+                <VideoElement className='video-frame' srcObject={videoStream} autoPlay={true} playsInline={true} controls={true}/>
+                : <video className='video-frame'/>}
             <div className='toolbar'>
                 <button type="button" className="icon-btn-lg" onClick={startVideo} aria-label="Start">
                     <AiOutlinePlayCircle/>

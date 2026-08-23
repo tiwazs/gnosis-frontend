@@ -35,18 +35,28 @@ export class ApiFaceProcessingService {
             ...data,
         };
 
-        const response = await fetch(`${this.apiUrl}/processing/stream`, {
+        const url = `${this.apiUrl}/processing/stream`;
+        const response = await fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 "ngrok-skip-browser-warning": "69420",
-                'Authorization': apikey
+                'Authorization': `Bearer ${apikey}`
             },
             body: JSON.stringify(payload),
         })
-        const body = await response.json();
+        const raw = await response.text();
+        let body: any = null;
+        try {
+            body = raw ? JSON.parse(raw) : null;
+        } catch {
+            throw new Error(
+                `Signaling did not return JSON (${response.status}) from ${url}. ` +
+                `Is NEXT_PUBLIC_API_URL the main API (not this Next app), and is POST /api/processing/stream deployed?`
+            );
+        }
         if (!response.ok) {
-            throw new Error(body.error ?? `Signaling failed (${response.status})`);
+            throw new Error(body?.error ?? `Signaling failed (${response.status})`);
         }
         return body;
     }
@@ -93,7 +103,7 @@ export class FaceProcessingStream{
         pc.ontrack = evt => {
             console.log("Track");    
             if (evt.track.kind == 'video')
-                this.video = evt.streams[0];
+                this.video = evt.streams[0] ?? new MediaStream([evt.track]);
         }
 
         return pc;
@@ -142,12 +152,12 @@ export class FaceProcessingStream{
             const answer = await this.apiFaceProcessingService.postFaceProcessingStreamSDP(offerModel, apikey, graph);
 
             // Setting the remote Description once an answer is gotten
-            this.pc.setRemoteDescription(answer);
+            await this.pc.setRemoteDescription(answer);
             console.log("Connection completed");
         }catch(error){
-            // Something went wrong
             console.log('Error trying to establish connection');
             alert(error);
+            throw error;
         };
     }
 
@@ -157,6 +167,7 @@ export class FaceProcessingStream{
         let resolution_vals: string[];
         let constraints: any;
         this.pc = this.createPeerConnection();
+        this.video = null;
 
         // Setting up parameters
         constraints = { audio: false, video: false };
@@ -166,8 +177,8 @@ export class FaceProcessingStream{
         if (resolution) { 
             resolution_vals = resolution.split('x');
             constraints['video'] = {
-                width: parseInt(resolution[0], 0),
-                height: parseInt(resolution[1], 0)
+                width: parseInt(resolution_vals[0], 10),
+                height: parseInt(resolution_vals[1], 10)
             };
         } else {
             constraints.video = true;
@@ -188,19 +199,20 @@ export class FaceProcessingStream{
         
         // Waiting for the video stream to be available before returning it
         return await new Promise((resolve, reject) => {
-            let countDown = 10;
+            let countDown = 20;
             console.log("Waiting for video stream");
             var videoWaitInterval = setInterval(()=> {
                 if(this.video){
                     console.log("Video stream available");
-                    resolve(this.video);
                     clearInterval(videoWaitInterval);
+                    resolve(this.video);
                 }
                 else{
                     countDown--;
-                    if(countDown <= 0)
-                        reject("No video stream available");
+                    if(countDown <= 0) {
                         clearInterval(videoWaitInterval);
+                        reject(new Error("No video stream available"));
+                    }
                 }
             }, 500)
         });
