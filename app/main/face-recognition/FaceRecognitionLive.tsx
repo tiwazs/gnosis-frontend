@@ -18,7 +18,11 @@ function FaceRecognitionLive({groupId}: FaceRecognitionLiveProps): any {
 
     const startVideo = async () => {
         console.log('start video' + JSON.stringify(session) + " group "  + groupId);
-        const stream:MediaStream = await faceRecognitionStream.start(session?.apikey as string, groupId);
+        const stream:MediaStream = await faceRecognitionStream.start(session?.apikey as string, {
+            origin: { name: "frontend", args: null },
+            processor: { name: "recognizer-api", args: { type: "recognition", groupId: groupId } },
+            destination: { name: "frontend", args: null },
+        });
         setVideoStream(stream);
     };
 

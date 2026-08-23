@@ -8,10 +8,15 @@ export type RtcOfferDataModel = {
     type: string;
 }
 
-export type RtcOfferRecognitionDataModel = {
-    sdp: string;
-    type: string;
-    recognitionGroupDataset: string;
+export type GraphNode = {
+    name: string;
+    args: Record<string, unknown> | null;
+}
+
+export type ProcessingGraph = {
+    origin: GraphNode;
+    processor: GraphNode | null;
+    destination: GraphNode;
 }
 
 export class ApiFaceProcessingService {
@@ -24,12 +29,13 @@ export class ApiFaceProcessingService {
     }
     
     // Class Methods
-    async postFaceProcessingStreamSDP(data: RtcOfferDataModel, apikey: string, recognitionGroupDataset: string | undefined ): Promise<any> {
-        // If the recognitionGroupDataset is defined, then we are doing recognition, otherwise we are doing detection
-        const processType:string = recognitionGroupDataset ? "recognition" : "detection";
-        const payload = recognitionGroupDataset ? {...data, groupId: recognitionGroupDataset} : data;
+    async postFaceProcessingStreamSDP(data: RtcOfferDataModel, apikey: string, graph: ProcessingGraph): Promise<any> {
+        const payload = {
+            ...graph,
+            ...data,
+        };
 
-        const response = await fetch(`${this.apiUrl}/${processType}/stream`, {
+        const response = await fetch(`${this.apiUrl}/processing/stream`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -38,7 +44,11 @@ export class ApiFaceProcessingService {
             },
             body: JSON.stringify(payload),
         })
-        return response.json();
+        const body = await response.json();
+        if (!response.ok) {
+            throw new Error(body.error ?? `Signaling failed (${response.status})`);
+        }
+        return body;
     }
 }
 
@@ -95,7 +105,7 @@ export class FaceProcessingStream{
     // Waits for Ice to complete. Then sends the offer to the  other peers
     // through an endpoint on the signaling server, the other peer sends the answer sdp
     // and then use this sdp to set the remote description and complete the connection
-    negotiate = async (apikey: string, recognitionGroupDataset: string | undefined): Promise<void> => {
+    negotiate = async (apikey: string, graph: ProcessingGraph): Promise<void> => {
         try{
             // Creates Offer sdp to set the local Description
             const offer = await this.pc.createOffer();
@@ -129,7 +139,7 @@ export class FaceProcessingStream{
             let offerModel:RtcOfferDataModel = {sdp, type}
             
             // Sending the offer and getting the answer
-            const answer = await this.apiFaceProcessingService.postFaceProcessingStreamSDP(offerModel, apikey, recognitionGroupDataset);
+            const answer = await this.apiFaceProcessingService.postFaceProcessingStreamSDP(offerModel, apikey, graph);
 
             // Setting the remote Description once an answer is gotten
             this.pc.setRemoteDescription(answer);
@@ -142,7 +152,7 @@ export class FaceProcessingStream{
     }
 
     // Function to start The WebRTC connection process
-    async start(apikey: string, recognitionGroupDataset: string | undefined): Promise<MediaStream> {
+    async start(apikey: string, graph: ProcessingGraph): Promise<MediaStream> {
         let resolution: string;
         let resolution_vals: string[];
         let constraints: any;
@@ -171,9 +181,9 @@ export class FaceProcessingStream{
             } catch (error) {
                 console.log(error);
             }
-            await this.negotiate(apikey, recognitionGroupDataset);                
+            await this.negotiate(apikey, graph);                
         } else {
-            await this.negotiate(apikey, recognitionGroupDataset);
+            await this.negotiate(apikey, graph);
         }
         
         // Waiting for the video stream to be available before returning it
