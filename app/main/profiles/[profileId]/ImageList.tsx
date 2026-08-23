@@ -47,7 +47,7 @@ function ProfileList({profileId, apikey}: ImagesProps) {
     }, [query.status, query.data]);
     
     if (query.isLoading) {
-        return <h2>Loading...</h2>;
+        return <h2 className="text-sm text-zinc-500">Loading...</h2>;
     }
 
     return (

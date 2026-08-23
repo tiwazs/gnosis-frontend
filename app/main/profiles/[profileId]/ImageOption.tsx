@@ -75,23 +75,18 @@ export default function ImageOption({imageId, profileId, name, coder, isCoded, i
   };
 
   return (
-    <div className={`flex flex-row items-center justify-between p-1 rounded-lg 
-                    bg-[#2b2532] hover:bg-[#3f3847] ${className} group`}>
-        <div className='mx-4 my-2 cursor-pointer flex flex-col items-center space-x-4'>
-                <div className='flex items-center'>
-                    <div className='flex flex-col items-center'>
-                        <img className=' h-48 w-auto rounded-lg border border-green-700 hover:transition-transform' src={imgSrc} alt={name} />
-                        <h5 className='text-gray-300 font-thin mx-1 mt-2'>{name}</h5>
-                    </div>
-                    {isCoded  ? <h5 className=' p-2 rounded-lg mx-1 mt-2 text-green-700'> <GiCheckMark/> </h5>: 
-                                <h5 className=' p-2 rounded-lg mx-1 mt-2 text-yellow-600'> <BsExclamationLg/> </h5> }
-                </div>
+    <div className={`card card-hover group flex flex-row items-center justify-between ${className ?? ''}`}>
+        <div className='flex items-center gap-4 px-1'>
+            <div className='flex flex-col items-center'>
+                <img className='h-44 w-auto rounded-xl object-cover ring-1 ring-white/10' src={imgSrc} alt={name} />
+                <h5 className='mt-2 text-sm text-zinc-300'>{name}</h5>
+            </div>
+            {isCoded  ? <span className='pill-ok'> <GiCheckMark/> </span>: 
+                        <span className='pill-warn'> <BsExclamationLg/> </span> }
         </div>
         <div className='flex'>
-            <h5 className="invisible group-hover:visible mx-1 rounded-lg px-3 py-1 hover:bg-[#2b2532]
-                                 active:translate-y-1 text-xl cursor-pointer text-gray-400 " onClick={encodeImage}><BiBarcodeReader/></h5>
-            <h5 className="invisible group-hover:visible mx-1 rounded-lg px-3 py-1 hover:bg-[#2b2532]
-                                 active:translate-y-1 text-xl cursor-pointer text-gray-400 " onClick={deleteImage}><IoTrashOutline/></h5>
+            <button type="button" className="icon-btn opacity-0 group-hover:opacity-100" onClick={encodeImage} aria-label="Encode"><BiBarcodeReader/></button>
+            <button type="button" className="icon-btn opacity-0 hover:!text-red-300 group-hover:opacity-100" onClick={deleteImage} aria-label="Delete image"><IoTrashOutline/></button>
         </div>
     </div>
   )

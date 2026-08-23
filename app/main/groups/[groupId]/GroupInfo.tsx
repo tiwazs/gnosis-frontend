@@ -64,32 +64,29 @@ export default function GroupInfo( {groupId, apikey} : GroupInfoProps ) {
     }
     
     return (
-        <div className='flex flex-col md:grid md:grid-cols-4 gap-4'>
+        <div className='grid grid-cols-1 gap-8 md:grid-cols-4'>
             <div className='md:col-span-1'>
-                <h2 className='text-gray-200 text-4xl'>{capitalize(query.data!.name)}</h2>
-                <p className=' my-4 text-gray-400 text-sm'>{query.data!.description}</p>
-                <div className=''>
-                    <div className='flex justify-between items-center'>
-                        <h5 className='text-gray-200 text-2xl'>Dataset</h5>
-                        <h5 className='my-2 text-gray-300 p-1'>{query.data!.dataset ? <span className='bg-green-700 rounded-lg p-1'>Generated<GiCheckMark className='inline-flex'/></span> :
-                                                                                <span className='bg-yellow-700 rounded-lg p-1'>Pending<BsExclamationLg className='inline-flex'/></span>  } 
-                        </h5>
+                <p className="page-kicker">Group</p>
+                <h2 className='page-title'>{capitalize(query.data!.name)}</h2>
+                <p className='mt-3 text-sm leading-relaxed text-zinc-400'>{query.data!.description}</p>
+                <div className='card mt-6'>
+                    <div className='mb-4 flex items-center justify-between gap-2'>
+                        <h5 className='text-sm font-medium text-zinc-200'>Dataset</h5>
+                        {query.data!.dataset ? <span className='pill-ok'>Ready <GiCheckMark className='inline'/></span> :
+                                                                                <span className='pill-warn'>Pending <BsExclamationLg className='inline'/></span>  }
                     </div>
-                    <div className='flex justify-around'>
-                        <h5 className="rounded-lg p-2 bg-[#2b2532] hover:bg-[#3f3847]
-                                    active:translate-y-1 text-lg cursor-pointer text-gray-300 inline-flex " onClick={generateDataset}>Generate <BiBarcodeReader/></h5>
-                        <h5 className="rounded-lg p-2 bg-[#2b2532] hover:bg-[#3f3847]
-                                    active:translate-y-1 text-xl cursor-pointer text-gray-300 inline-flex" onClick={deleteDataset}>Delete <IoTrashOutline/></h5>
+                    <div className='flex flex-wrap gap-2'>
+                        <button type="button" className="btn-secondary text-sm" onClick={generateDataset}>Generate <BiBarcodeReader/></button>
+                        <button type="button" className="btn-secondary text-sm" onClick={deleteDataset}>Delete <IoTrashOutline/></button>
                     </div>
                 </div>
             </div>
             <div className='md:col-span-3'>
-                <h2 className='text-gray-200 text-2xl'>Profiles</h2>
-                <AddProfileToGroupDialog  apikey={apikey} groupId={groupId} />
-                <div>
-                    <hr className="p-2 border-green-700" />
-                    <ProfileList groupId={groupId} apikey={apikey} />
+                <div className="page-header">
+                    <h2 className='text-lg font-semibold text-zinc-100'>Profiles</h2>
+                    <AddProfileToGroupDialog  apikey={apikey} groupId={groupId} />
                 </div>
+                <ProfileList groupId={groupId} apikey={apikey} />
             </div>
         </div>
     )

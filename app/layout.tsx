@@ -15,7 +15,7 @@ export default function RootLayout({
     <QueryClientProvider client={queryClient}>
     <html>
       <head />
-        <body className=" bg-[url('/cool-background2.png')] ">
+        <body>
           <SessionProvider refetchOnWindowFocus={false}>
           {children}
           </SessionProvider>

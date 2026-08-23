@@ -80,21 +80,21 @@ export default class userService {
         return user;
     }
 
-    static async update(id: string, user: UserDataModel): Promise<User | null> {
-        if(user.password) {
-            if(user.password.length < 8) {
+    static async update(id: string, user: Partial<UserDataModel>): Promise<User | null> {
+        const { password, ...rest } = user as Partial<UserDataModel> & { name?: string; image?: string };
+        const data: Record<string, unknown> = { ...rest };
+        if (password) {
+            if (password.length < 8) {
                 throw new Error("Password must be at least 8 characters long.");
             }
-            user.password = await Encryptor.encryptPassword(user.password);
+            data.password = await Encryptor.encryptPassword(password);
         }
 
         const userUpdated = await prisma.user.update({
             where: {
                 id
             },
-            data: {
-                ...user
-            }
+            data
         });
         return userUpdated;
     }

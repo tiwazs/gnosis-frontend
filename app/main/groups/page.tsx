@@ -17,21 +17,19 @@ const GroupsPage = () => {
     })
     const router = useRouter();
 
-    if(status === "loading") return <div className="text-green-700">Loading...</div>  
+    if(status === "loading") return <div className="text-emerald-400/80">Loading...</div>  
 
     return (
-        <div className="bg-[#221c28]">              
-            <div className='flex justify-center'>
-                <h5 className='text-lg'>Groups</h5>
-            </div>
-            <div className='flex'>
+        <div>              
+            <div className="page-header">
+                <div>
+                    <p className="page-kicker">Library</p>
+                    <h1 className="page-title">Groups</h1>
+                </div>
                 <NewGroupDialog userId={session.userId as string} apikey={session.apikey as string} />
             </div>
-            <div>
-                <hr className="p-2 border-green-700" />
-            </div>
-            <div className=' space-y-4'>
-                <Suspense fallback={<div className="text-green-700">Loading...</div>}>
+            <div className='space-y-3'>
+                <Suspense fallback={<div className="text-emerald-400/80">Loading...</div>}>
                     <GroupList userId={session.userId as string} apikey={session.apikey as string} />
                 </Suspense>
             </div>

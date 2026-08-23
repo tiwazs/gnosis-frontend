@@ -29,7 +29,7 @@ function ProfileList({userId, apikey}: ProfilesProps) {
     //const profiles = use( getProfiles(userId, apikey) );
     const query = useQuery(["profiles",userId, apikey], () => getProfiles(userId, apikey) )
     if (query.isLoading) {
-      return <h2>Loading...</h2>;
+      return <h2 className="text-sm text-zinc-500">Loading...</h2>;
     }
 
 

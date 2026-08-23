@@ -1,31 +1,34 @@
 import React from 'react';
 import { MdDarkMode } from 'react-icons/md';
 import { IoLanguageSharp } from 'react-icons/io5';
-import { MdViewSidebar } from 'react-icons/md';
 import DropDownAccount from './DropDownAccount';
 import Link from 'next/link';
 
 const TopBar = () => {
     return (
-        <div className='bg-[#221c28] h-14 flex items-center'>
-            <div className='w-full flex items-center justify-between px-4'>
-                {/* Left Side */}
-                <div>
-                    <Link href="/main">
-                        <h5 className=" text-2xl cursor-pointer text-gray-300 hover:text-green-600"><MdViewSidebar/></h5>
-                    </Link>
-                </div>
-                {/* Right Side */}
-                <div className='flex items-center space-x-4'>
-                    <h5 className=" text-2xl cursor-pointer text-gray-300 hover:text-green-600"><MdDarkMode/></h5>
-                    <h5 className=" text-2xl cursor-pointer text-gray-300 hover:text-green-600"><IoLanguageSharp/></h5>
-                    {/* Logo. TODO: Substitute for dropdown */}
-                    <div className='flex items-center'>
+        <header className="sticky top-0 z-30 border-b border-white/5 bg-[#120e16]/80 backdrop-blur-xl">
+            <div className="mx-auto flex h-14 w-[min(1120px,calc(100%-1.5rem))] items-center justify-between">
+                <Link href="/main" className="group flex items-center gap-2.5">
+                    <span className="grid h-8 w-8 place-items-center rounded-lg bg-emerald-500/20 text-sm font-semibold text-emerald-300 ring-1 ring-emerald-400/25">
+                        G
+                    </span>
+                    <span className="text-sm font-semibold tracking-wide text-zinc-100 group-hover:text-emerald-300">
+                        Gnosis
+                    </span>
+                </Link>
+                <div className="flex items-center gap-1">
+                    <button type="button" className="icon-btn" aria-label="Theme">
+                        <MdDarkMode className="text-lg" />
+                    </button>
+                    <button type="button" className="icon-btn" aria-label="Language">
+                        <IoLanguageSharp className="text-lg" />
+                    </button>
+                    <div className="ml-1">
                         <DropDownAccount up={false}/>
                     </div>
                 </div>
             </div>
-        </div>
+        </header>
     );
 };
 

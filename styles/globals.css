@@ -1,3 +1,150 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  html {
+    @apply antialiased;
+  }
+
+  body {
+    @apply min-h-screen bg-gnosis-bg font-sans text-zinc-200;
+    background-image:
+      radial-gradient(ellipse 90% 55% at 50% -15%, rgba(5, 150, 105, 0.18), transparent 55%),
+      radial-gradient(ellipse 50% 40% at 100% 100%, rgba(88, 28, 80, 0.18), transparent 50%),
+      linear-gradient(180deg, #161118 0%, #120e16 100%);
+    background-attachment: fixed;
+  }
+
+  ::selection {
+    @apply bg-emerald-500/30 text-white;
+  }
+}
+
+@layer components {
+  .page-shell {
+    @apply relative mx-auto my-6 w-[min(1120px,calc(100%-1.5rem))] overflow-hidden rounded-3xl border border-white/5 bg-gnosis-surface/90 p-5 shadow-glow backdrop-blur-md sm:p-8;
+  }
+
+  .page-header {
+    @apply mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between;
+  }
+
+  .page-title {
+    @apply text-2xl font-semibold tracking-tight text-zinc-50;
+  }
+
+  .page-kicker {
+    @apply mb-1 text-[11px] font-medium uppercase tracking-[0.22em] text-emerald-400/80;
+  }
+
+  .card {
+    @apply rounded-2xl border border-white/5 bg-gnosis-raised/80 p-5 shadow-sm;
+  }
+
+  .card-hover {
+    @apply transition duration-200 hover:-translate-y-0.5 hover:border-emerald-400/25 hover:bg-gnosis-hover/80 hover:shadow-glow;
+  }
+
+  .list-row {
+    @apply flex items-center justify-between gap-3 rounded-2xl border border-white/5 bg-gnosis-raised/70 px-3 py-2.5 transition hover:border-emerald-400/20 hover:bg-gnosis-hover;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-medium transition duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-gnosis-surface disabled:opacity-50;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-400/30 bg-emerald-500/20 px-4 py-2 text-sm font-medium text-emerald-200 transition duration-150 hover:bg-emerald-500/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-gnosis-surface active:scale-[0.98] disabled:opacity-50;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-zinc-300 transition duration-150 hover:bg-white/10 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-gnosis-surface active:scale-[0.98] disabled:opacity-50;
+  }
+
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-medium text-zinc-400 transition duration-150 hover:bg-red-500/20 hover:text-red-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-gnosis-surface disabled:opacity-50;
+  }
+
+  .btn-icon {
+    @apply inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-gnosis-raised text-2xl text-zinc-300 transition hover:border-emerald-400/40 hover:bg-gnosis-hover hover:text-emerald-300 active:scale-95;
+  }
+
+  .btn-icon-solid {
+    @apply inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-emerald-400/30 bg-emerald-500/20 text-2xl text-emerald-200 transition hover:bg-emerald-500/30 active:scale-95;
+  }
+
+  .icon-btn {
+    @apply inline-flex h-9 w-9 items-center justify-center rounded-xl text-zinc-400 transition hover:bg-white/10 hover:text-emerald-300;
+  }
+
+  .input-field {
+    @apply w-full rounded-xl border border-white/10 bg-gnosis-raised px-3.5 py-2.5 text-zinc-200 placeholder:text-zinc-500 outline-none transition focus:border-emerald-400/40 focus:bg-gnosis-hover focus:ring-2 focus:ring-emerald-400/20;
+  }
+
+  .video-frame {
+    @apply aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-black/50 object-cover shadow-inner;
+  }
+
+  .toolbar {
+    @apply mt-4 flex items-center justify-center gap-4 rounded-2xl border border-white/5 bg-gnosis-raised/70 p-4;
+  }
+
+  .segmented {
+    @apply inline-flex rounded-xl border border-white/10 bg-black/20 p-1;
+  }
+
+  .segmented-btn {
+    @apply rounded-lg px-3.5 py-1.5 text-sm font-medium text-zinc-400 transition hover:text-zinc-100;
+  }
+
+  .segmented-btn-active {
+    @apply bg-emerald-500/20 text-emerald-100 shadow-sm;
+  }
+
+  .badge {
+    @apply ml-2 inline-flex rounded-full bg-emerald-500/20 px-2 py-0.5 text-xs font-medium text-emerald-200;
+  }
+
+  .modal-backdrop {
+    @apply fixed inset-0 bg-black/60 backdrop-blur-sm;
+  }
+
+  .modal-panel {
+    @apply w-full max-w-md transform overflow-hidden rounded-2xl border border-white/10 bg-gnosis-surface p-6 text-left shadow-glow transition-all;
+  }
+
+  .status-pill {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium;
+  }
+
+  .empty-state {
+    @apply rounded-2xl border border-dashed border-white/10 bg-black/20 px-6 py-12 text-center text-sm text-zinc-500;
+  }
+
+  .page-kicker {
+    @apply mb-1 text-[11px] font-medium uppercase tracking-[0.22em] text-emerald-400/80;
+  }
+
+  .seg {
+    @apply inline-flex rounded-xl border border-white/10 bg-black/20 p-1;
+  }
+
+  .seg-item {
+    @apply rounded-lg px-3.5 py-1.5 text-sm font-medium text-zinc-400 transition hover:text-zinc-100;
+  }
+
+  .seg-item-active {
+    @apply bg-emerald-500/20 text-emerald-100 shadow-sm;
+  }
+
+  .pill-ok {
+    @apply inline-flex items-center gap-1 rounded-full bg-emerald-500/20 px-2.5 py-1 text-xs font-medium text-emerald-300;
+  }
+
+  .pill-warn {
+    @apply inline-flex items-center gap-1 rounded-full bg-amber-500/20 px-2.5 py-1 text-xs font-medium text-amber-300;
+  }
+}

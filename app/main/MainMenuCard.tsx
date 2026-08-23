@@ -15,31 +15,21 @@ interface MainMenuCardProps {
 
 const MainMenuCard = ({title,description,icon,redirectPath,className}:MainMenuCardProps) => {
     return (
-        <>
-            {/* Card */}
-            <div className={`border rounded-lg border-green-700 shadow-md shadow-green-700/50 space-y-4 py-6 group ${className}`}>
-                <Link href={`${redirectPath}`}>
-                {/* Icon and Title */}
-                <div className='flex flex-col items-center justify-between'>
-                    <img  className="h-14 w-14 rounded-md hover:cursor-pointer" src={`${icon}`} />
-                    <h5 className='text-gray-300 group-hover:text-gray-100 text-lg'>{title}</h5>
-                </div>
-                {/* Description */}
-                <div className='flex flex-col items-center justify-between'>
-                    <p className='text-gray-300 group-hover:text-gray-100 text-center'>{description}</p>
-                </div>
-                {/* Options. Selectable */}
-                <div className='flex flex-col items-center justify-between my-4'>
-                    <div className='flex space-x-20'>
-                        <h5 className="hover:text-gray-200 border-green-700 shadow-lg shadow-green-700/50 rounded-lg px-4 py-1 hover:bg-[#3f3847]
-                                 active:translate-y-1 text-4xl cursor-pointer text-gray-300 "><AiOutlineCamera/></h5>
-                        <h5 className="hover:text-gray-200 border-green-700 shadow-lg shadow-green-700/50 rounded-lg px-4 py-1 hover:bg-[#3f3847]
-                                 active:translate-y-1 text-4xl cursor-pointer text-gray-300 "><BsCameraReels/></h5>
-                    </div>
-                </div>
-                </Link>
+        <Link href={`${redirectPath}`} className={`card card-hover group flex h-full flex-col ${className ?? ''}`}>
+            <div className='flex items-center gap-3'>
+                <img  className="h-11 w-11 rounded-xl object-cover ring-1 ring-white/10" src={`${icon}`} alt="" />
+                <h5 className='text-base font-semibold text-zinc-100'>{title}</h5>
             </div>
-        </>
+            <p className='mt-3 flex-1 text-sm leading-relaxed text-zinc-400'>{description}</p>
+            <div className='mt-5 flex gap-2 text-zinc-500'>
+                <span className="grid h-9 w-9 place-items-center rounded-xl bg-black/20 text-lg ring-1 ring-white/5 transition group-hover:text-emerald-300">
+                    <AiOutlineCamera/>
+                </span>
+                <span className="grid h-9 w-9 place-items-center rounded-xl bg-black/20 text-lg ring-1 ring-white/5 transition group-hover:text-emerald-300">
+                    <BsCameraReels/>
+                </span>
+            </div>
+        </Link>
     );
 };
 

@@ -48,22 +48,19 @@ export default function ProfileOption({profileId, groupId, name, description, co
   };
 
   return (
-    <div className={`flex flex-row items-center justify-between p-1 rounded-lg 
-                    bg-[#2b2532] hover:bg-[#3f3847] ${className} group`}>
-        <Link href={`/main/profiles/${profileId}`}>
-            <div className='mx-4 my-2 cursor-pointer flex items-center space-x-4'>
-                <img className='w-10 h-10 rounded-full border border-green-700' src="/no_avatar.webp" alt="" />
-                <div className=''>
-                    <h5 className='text-gray-300'>{name}</h5>
-                    <p className='text-gray-400 font-light text-sm'>{description}</p>
+    <div className={`list-row ${className ?? ''} group`}>
+        <Link href={`/main/profiles/${profileId}`} className="min-w-0 flex-1">
+            <div className='flex items-center gap-4 px-1 py-1'>
+                <img className='h-11 w-11 rounded-full object-cover ring-1 ring-emerald-400/30' src="/no_avatar.webp" alt="" />
+                <div className='min-w-0'>
+                    <h5 className='truncate font-medium text-zinc-100'>{name}</h5>
+                    <p className='truncate text-sm text-zinc-500'>{description}</p>
                 </div>
             </div>
         </Link>
-        <div className='flex'>
-            <h5 className="invisible group-hover:visible mx-1 rounded-lg px-3 py-1 hover:bg-[#2b2532]
-                                 active:translate-y-1 text-xl cursor-pointer text-gray-400 ">{coded ? <GiCheckMark/> : <BsExclamationLg/> }</h5>
-            <h5 className="invisible group-hover:visible mx-1 rounded-lg px-3 py-1 hover:bg-[#2b2532]
-                                 active:translate-y-1 text-xl cursor-pointer text-gray-400 " onClick={deleteProfile}><IoTrashOutline/></h5>
+        <div className='flex shrink-0 items-center'>
+            <span className="icon-btn opacity-0 group-hover:opacity-100">{coded ? <GiCheckMark/> : <BsExclamationLg/> }</span>
+            <button type="button" className="icon-btn opacity-0 hover:!text-red-300 group-hover:opacity-100" onClick={deleteProfile} aria-label="Remove from group"><IoTrashOutline/></button>
         </div>
     </div>
   )

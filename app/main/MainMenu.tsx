@@ -4,51 +4,48 @@ import MainMenuCard from './MainMenuCard';
 const MainMenu = () => {
     return (
         <>
-            {/* Cards */}
-            <div className=' space-y-4 lg:space-y-0 lg:grid lg:grid-cols-3 lg:gap-4'>
+            <div className="page-header">
+                <div>
+                    <p className="page-kicker">Workspace</p>
+                    <h1 className="page-title">Choose a module</h1>
+                </div>
+            </div>
+            <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'>
                 <MainMenuCard 
                     title='Face Detection'
-                    description='Find faces in images or videos. Take a picture from your browser or upload it from your computer to get started. 
-                    or start a video feed to detect faces in real time.'
+                    description='Find faces in stills or a live feed. Snap a photo, upload a file, or stream from the browser camera.'
                     icon='/main_menu_images/face_detection_icon.png'
                     redirectPath='/main/face-detection'
-                    className='bg-[#2b2532] hover:bg-[#302a36]'
                 />
                 <MainMenuCard 
                     title='Face Recognition'
-                    description='Find faces and identify them in images or videos. Create a dataset of known faces and then Take a picture from your browser or upload it from your computer to get started. 
-                    or start a video feed to detect faces in real time.'
+                    description='Match faces against a group dataset. Build encodings, then identify people from snaps or live video.'
                     icon='/main_menu_images/face_recognition_icon.png'
                     redirectPath='/main/face-recognition'
-                    className='bg-[#2b2532] hover:bg-[#302a36]'
                 />
                 <MainMenuCard 
                     title='Profiles'
-                    description='Create profiles for people to be recognized in images or videos.'
+                    description='People records and reference images used for recognition, groups, and access lists.'
                     icon='/main_menu_images/profiles_icon.png'
                     redirectPath='/main/profiles'
-                    className='bg-[#2b2532] hover:bg-[#302a36]'
                 />
                 <MainMenuCard 
                     title='Continuous Vigilance'
-                    description='Start a video feed to detect and identify faces in real time and keep record of them.'
+                    description='Keep a persistent feed running and retain detections over time.'
                     icon='/main_menu_images/continuous_vigilance_icon.png'
                     redirectPath='/main/continuous-vigilance'
-                    className='bg-[#2b2532] hover:bg-[#302a36]'
                 />
                 <MainMenuCard 
                     title='Access Control'
-                    description='Create acess lists and start a service to control access to a place or a building.'
+                    description='Build allow lists and run a door or site as a recognition-backed gate.'
                     icon='/main_menu_images/face_detection_icon.png'
                     redirectPath='/main/access-control'
-                    className='bg-[#2b2532] hover:bg-[#302a36]'
                 />
                 <MainMenuCard 
                     title='Groups'
-                    description='Create groups of profiles to create a reocnition dataset, access control, continuous vigilance.'
+                    description='Bundle profiles into datasets for recognition, vigilance, and access control.'
                     icon='/main_menu_images/groups_icon.png'
                     redirectPath='/main/groups'
-                    className='bg-[#2b2532] hover:bg-[#302a36]'
                 />
             </div>
         </>

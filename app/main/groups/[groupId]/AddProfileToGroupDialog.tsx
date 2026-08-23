@@ -124,7 +124,8 @@ export default function AddProfileToGroupDialog({groupId, apikey}:AddProfileToGr
         <button
           type="button"
           onClick={openModal}
-          className="rounded-md hover:bg-[#3f3847] hover:bg-opacity-60 shadow-lg hover:shadow-green-700/50 px-4 py-2 font-medium text-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
+          className="icon-btn-lg h-11 w-11 text-xl"
+          aria-label="Add profiles"
         >
           <IoAddSharp className='text-2xl font-thin text-gray-400"' />
         </button>
@@ -141,7 +142,7 @@ export default function AddProfileToGroupDialog({groupId, apikey}:AddProfileToGr
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="fixed inset-0 bg-black bg-opacity-25" />
+            <div className="modal-backdrop" />
           </Transition.Child>
 
           <div className="fixed inset-0 overflow-y-auto">
@@ -155,10 +156,10 @@ export default function AddProfileToGroupDialog({groupId, apikey}:AddProfileToGr
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-[#221c28] p-6 text-left shadow-xl transition-all">
+                <Dialog.Panel className="modal-panel">
                   <Dialog.Title
                     as="h3"
-                    className="text-lg font-medium leading-6 text-gray-200"
+                    className="text-lg font-semibold text-zinc-100"
                   >
                     Add Profiles
                   </Dialog.Title>
@@ -179,7 +180,7 @@ export default function AddProfileToGroupDialog({groupId, apikey}:AddProfileToGr
                                 value={profileSel.profile}
                                 className={({ checked }) =>
                                   `${
-                                    checked ? 'bg-[#3f3847] bg-opacity-75' : 'bg-[#2b2532]'
+                                    checked ? 'bg-gnosis-hover' : 'bg-gnosis-raised'
                                   }
                                     relative flex cursor-pointer rounded-lg my-2 px-5 py-4 shadow-md focus:outline-none text-white`
                                 }
@@ -222,15 +223,12 @@ export default function AddProfileToGroupDialog({groupId, apikey}:AddProfileToGr
                       <div className="mt-4 flex justify-between">
                           <button
                           type="button"
-                          className="inline-flex justify-center rounded-md bg-[#2b2532] hover:bg-[#3f3847] px-4 py-2 text-sm font-medium text-gray-400  focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-200 focus-visible:ring-offset-2"
+                          className="btn-secondary"
                           onClick={closeModal}
                           >
                           Cancel
                           </button>
-                          <div className='inline-flex justify-center hover:text-gray-200 border border-green-700 shadow-lg shadow-green-700/50 rounded-lg px-4 py-2 bg-[#2b2532] hover:bg-[#3f3847]
-                                              cursor-pointer'>
-                                  <button className='text-gray-400 text-sm cursor-pointer' onClick={addProfiles}>Add</button>
-                          </div>
+                          <button type="button" className='btn-primary' onClick={addProfiles}>Add</button>
                       </div>
                   </div>
                   {/* Insides of the Modal */}

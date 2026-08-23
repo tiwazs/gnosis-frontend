@@ -29,7 +29,7 @@ function GroupList({userId, apikey}: GroupsProps) {
     //const profiles = use( getProfiles(userId, apikey) );
     const query = useQuery(["groups",userId, apikey], () => getGroups(userId, apikey) )
     if (query.isLoading) {
-      return <h2>Loading...</h2>;
+      return <h2 className="text-sm text-zinc-500">Loading...</h2>;
     }
 
 

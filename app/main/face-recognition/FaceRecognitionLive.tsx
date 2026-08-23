@@ -35,17 +35,15 @@ function FaceRecognitionLive({groupId}: FaceRecognitionLiveProps): any {
     <>
         <div className='flex flex-col'>
             {videoStream ? 
-                <VideoElement className='border border-green-600 rounded-lg w-full h-full' srcObject={videoStream} autoPlay={true} controls={true}/>
-                : <video className='border border-green-600 rounded-lg w-full h-full'/>}
-            <div className='bg-[#2b2532] focus:bg-[#3f3847] rounded-lg p-4 my-4'>
-                <div>
-                </div>
-                <div className='flex items-center justify-center space-x-16'>
-                    <h5 className="hover:text-gray-200 border border-green-700 shadow-lg shadow-green-700/50 active:bg-green-700 rounded-lg px-4 py-1 hover:bg-[#3f3847]
-                             active:translate-y-1 text-4xl cursor-pointer text-gray-400 " onClick={startVideo}><AiOutlinePlayCircle/></h5>
-                    <h5 className="hover:text-gray-200 border border-green-700 shadow-lg shadow-green-700/50 active:bg-green-700 rounded-lg px-4 py-1 hover:bg-[#3f3847]
-                             active:translate-y-1 text-4xl cursor-pointer text-gray-400 " onClick={stopVideo}><BiStopCircle/></h5>
-                </div>
+                <VideoElement className='video-stage' srcObject={videoStream} autoPlay={true} controls={true}/>
+                : <video className='video-stage'/>}
+            <div className='toolbar'>
+                <button type="button" className="icon-btn-lg" onClick={startVideo} aria-label="Start">
+                    <AiOutlinePlayCircle/>
+                </button>
+                <button type="button" className="icon-btn-lg" onClick={stopVideo} aria-label="Stop">
+                    <BiStopCircle/>
+                </button>
             </div>
         </div>
     </>

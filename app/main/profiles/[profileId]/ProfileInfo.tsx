@@ -41,16 +41,16 @@ export default function ProfileInfo({ profileId, apikey }: ProfileInfoProps) {
 
     if (loading || !profile) return <div>Loading...</div>;
     return (
-        <div className='flex flex-col md:grid md:grid-cols-4'>
+        <div className='grid grid-cols-1 gap-8 md:grid-cols-4'>
             <div className='md:col-span-1'>
-                <h2 className='text-gray-200 text-2xl'>{capitalize(profile.name)}</h2>
-                <p className=' my-4 text-gray-400 text-sm'>{profile.bio}</p>
+                <p className="page-kicker">Profile</p>
+                <h2 className='page-title'>{capitalize(profile.name)}</h2>
+                <p className='mt-3 text-sm leading-relaxed text-zinc-400'>{profile.bio}</p>
             </div>
             <div className='md:col-span-3'>
-                <h2 className='text-gray-200 text-2xl'>Images</h2>
-                <NewImageDialog profileId={profileId} apikey={apikey} />
-                <div>
-                    <hr className="p-2 border-green-700" />
+                <div className="page-header">
+                    <h2 className='text-lg font-semibold text-zinc-100'>Images</h2>
+                    <NewImageDialog profileId={profileId} apikey={apikey} />
                 </div>
                 <ImageList profileId={profileId} apikey={apikey} />
             </div>

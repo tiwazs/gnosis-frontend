@@ -63,7 +63,8 @@ export default function NewProfileDialog({userId, apikey}:NewProfileDialogProps)
         <button
           type="button"
           onClick={openModal}
-          className="rounded-md hover:bg-[#3f3847] hover:bg-opacity-60 shadow-lg hover:shadow-green-700/50 px-4 py-2 font-medium text-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
+          className="icon-btn-lg h-11 w-11 text-xl"
+          aria-label="New profile"
         >
           <IoAddSharp className='text-2xl font-thin text-gray-400"' />
         </button>
@@ -80,7 +81,7 @@ export default function NewProfileDialog({userId, apikey}:NewProfileDialogProps)
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="fixed inset-0 bg-black bg-opacity-25" />
+            <div className="modal-backdrop" />
           </Transition.Child>
 
           <div className="fixed inset-0 overflow-y-auto">
@@ -94,15 +95,15 @@ export default function NewProfileDialog({userId, apikey}:NewProfileDialogProps)
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-[#221c28] p-6 text-left shadow-xl transition-all">
+                <Dialog.Panel className="modal-panel">
                   <Dialog.Title
                     as="h3"
-                    className="text-lg font-medium leading-6 text-gray-200"
+                    className="text-lg font-semibold text-zinc-100"
                   >
                     New Profile
                   </Dialog.Title>
                   <div className="mt-2">
-                    <p className="text-sm text-gray-400">
+                    <p className="text-sm text-zinc-400">
                       Create a new profile to use on the face recognition app.
                     </p>
                     <form className='rounded-2xl flex-row justify-between ' onSubmit={handleSubmit(onSubmit)}>
@@ -119,7 +120,7 @@ export default function NewProfileDialog({userId, apikey}:NewProfileDialogProps)
                             <div>
                                 <input 
                                     {...register("name", { required: true })}
-                                    className='my-4 w-full rounded-lg p-3 text-gray-400 text-md bg-[#2b2532] focus:bg-[#3f3847] focus:outline-none'
+                                    className='input-field my-3'
                                     type="text"
                                     name="name"
                                     placeholder="Name"
@@ -128,7 +129,7 @@ export default function NewProfileDialog({userId, apikey}:NewProfileDialogProps)
                             <div>
                                 <textarea 
                                     {...register("bio", { required: true, maxLength: 1000 })}
-                                    className='my-4 w-full rounded-lg p-3 text-gray-400 text-md bg-[#2b2532] focus:bg-[#3f3847] focus:outline-none'
+                                    className='input-field my-3'
                                     name="bio"
                                     placeholder="Bio"
                                 />                                
@@ -137,15 +138,12 @@ export default function NewProfileDialog({userId, apikey}:NewProfileDialogProps)
                         <div className="mt-4 flex justify-between">
                             <button
                             type="button"
-                            className="inline-flex justify-center rounded-md bg-[#2b2532] hover:bg-[#3f3847] px-4 py-2 text-sm font-medium text-gray-400  focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-200 focus-visible:ring-offset-2"
+                            className="btn-secondary"
                             onClick={closeModal}
                             >
                             Cancel
                             </button>
-                            <div className='inline-flex justify-center hover:text-gray-200 border border-green-700 shadow-lg shadow-green-700/50 rounded-lg px-4 py-2 bg-[#2b2532] hover:bg-[#3f3847]
-                                                cursor-pointer'>
-                                    <input type="submit" value="Create" className='text-gray-400 text-sm cursor-pointer'/>
-                            </div>
+                            <input type="submit" value="Create" className='btn-primary cursor-pointer'/>
                         </div>
                     </form>
                   </div>
