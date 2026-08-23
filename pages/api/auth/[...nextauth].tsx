@@ -10,6 +10,9 @@ export const authOptions:NextAuthOptions = {
     GithubProvider({
       clientId: process.env.GITHUB_ID!,
       clientSecret: process.env.GITHUB_SECRET!,
+      // GitHub now sends RFC 9207 `iss` on the callback. Without this, openid-client
+      // throws "issuer must be configured on the issuer".
+      issuer: "https://github.com/login/oauth",
     }),
     // ...add more providers here
   ],
