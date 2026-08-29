@@ -1,6 +1,7 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import NextAuth, { NextAuthOptions } from "next-auth"
 import GithubProvider from "next-auth/providers/github"
+import crypto from "crypto";
 import prisma from "../../../lib/prisma";
 
 export const authOptions:NextAuthOptions = {
@@ -22,11 +23,20 @@ export const authOptions:NextAuthOptions = {
         token.uid = user.id;
         token.email = user.email;
       }
-      if (token.uid) {
-        const dbUser = await prisma.user.findUnique({
-          where: { id: String(token.uid) },
+      const userId = String(token.uid || token.sub || "");
+      if (userId) {
+        token.uid = userId;
+        let dbUser = await prisma.user.findUnique({
+          where: { id: userId },
           select: { apiKey: true, email: true },
         });
+        if (dbUser && !dbUser.apiKey) {
+          dbUser = await prisma.user.update({
+            where: { id: userId },
+            data: { apiKey: crypto.randomUUID() },
+            select: { apiKey: true, email: true },
+          });
+        }
         token.apikey = dbUser?.apiKey ?? null;
         if (dbUser?.email) {
           token.email = dbUser.email;

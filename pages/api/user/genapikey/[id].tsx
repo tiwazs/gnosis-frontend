@@ -13,7 +13,8 @@ const router = createRouter<UserRequest, NextApiResponse>();
 router.get( async (req: UserRequest, res: NextApiResponse) => {
     const token = await getToken({ req })
     if (!token) return res.status(401).json({"mesage":"Unauthorized"});
-    if(token.sub !== req.query.id) return res.status(401).json({"mesage":"Unauthorized"});
+    const userId = String(token.uid || token.sub || "");
+    if(userId !== req.query.id) return res.status(401).json({"mesage":"Unauthorized"});
 
     try{
         const user = await userService.genertateApiKey(req.query.id);

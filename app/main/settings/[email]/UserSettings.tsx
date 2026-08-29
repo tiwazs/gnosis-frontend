@@ -94,7 +94,7 @@ const UserSettings = ({ user }: SettingsProps) => {
             <ApiKeyFormCard
                 id={user.id}
                 displayOption="API key"
-                value={user.apiKey ?? ""}
+                value={user.apiKey || (session as any)?.apikey || ""}
                 description="Sent as Authorization on live stream and dataset requests to the main API."
             />
         </div>
