@@ -26,7 +26,7 @@ const ProfilePage = ( {params: {groupId}}: GroupPageProps ) => {
     return (
         <>                          
             <Suspense fallback={<div className="text-emerald-400/80">Loading...</div>}>
-                <GroupInfo groupId={groupId} apikey={session.apikey as string} />
+                <GroupInfo groupId={groupId} accessToken={session.accessToken as string} />
             </Suspense>
         </>
     );

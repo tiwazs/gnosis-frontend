@@ -12,11 +12,11 @@ interface ProfileOptionProps {
     name: string
     description: string
     coded: boolean
-    apikey: string
+    accessToken: string
     className?: string
 }
 
-export default function ProfileOption({profileId, groupId, name, description, coded, apikey, className}:ProfileOptionProps) {
+export default function ProfileOption({profileId, groupId, name, description, coded, accessToken, className}:ProfileOptionProps) {
     const router = useRouter();
     // TODO: Remove this once use hook is fixed
     const queryClient = useQueryClient();
@@ -33,7 +33,7 @@ export default function ProfileOption({profileId, groupId, name, description, co
                 headers: {
                     "Content-Type": "application/json",
                     "ngrok-skip-browser-warning": "69420",
-                'Authorization': apikey
+                'Authorization': `Bearer ${accessToken}`
                 },
                 body: JSON.stringify(data)
             });

@@ -5,20 +5,20 @@ import ImageOption from './ImageOption';
 
 interface ImagesProps {
     profileId: string
-    apikey: string
+    accessToken: string
 }
 
 interface ImageExt extends Image {
     imageBase64: string;
 }
 
-const getImages = async (profileId: string, apikey: string) => {
+const getImages = async (profileId: string, accessToken: string) => {
     try{
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/image/profile/${profileId}?base64=true`, {
             method: 'GET',
             headers: {
                 "ngrok-skip-browser-warning": "69420",
-                'Authorization': apikey
+                'Authorization': `Bearer ${accessToken}`
             }})
         const images: ImageExt[] = await response.json();
         return images;
@@ -28,10 +28,10 @@ const getImages = async (profileId: string, apikey: string) => {
     }
 }
 
-function ProfileList({profileId, apikey}: ImagesProps) {
+function ProfileList({profileId, accessToken}: ImagesProps) {
     // TODO: Remove this once use hook is fixed
-    //const profiles = use( getProfiles(userId, apikey) );
-    const query = useQuery(["images",profileId, apikey], () => getImages(profileId, apikey) )
+    //const profiles = use( getProfiles(userId, accessToken) );
+    const query = useQuery(["images",profileId, accessToken], () => getImages(profileId, accessToken) )
     const [images, setImages] = useState<string[]>([]);
     
     useEffect(() => {
@@ -60,7 +60,7 @@ function ProfileList({profileId, apikey}: ImagesProps) {
                     name={image.name}
                     coder={image.coder ? image.coder : ""}
                     imgSrc={images[index]}
-                    apikey={apikey}
+                    accessToken={accessToken}
                     isCoded={image.isCoded}
                 />
                 </div>

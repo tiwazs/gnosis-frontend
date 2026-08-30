@@ -12,24 +12,24 @@ import ProfileList from './ProfileList'
 
 interface GroupInfoProps {
     groupId: string
-    apikey: string
+    accessToken: string
 }   
 
-const getGroup = async (groupId: string, apikey: string) => {
+const getGroup = async (groupId: string, accessToken: string) => {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/group/${groupId}`, {
         method: 'GET',
         headers: {
             "ngrok-skip-browser-warning": "69420",
-                'Authorization': apikey
+                'Authorization': `Bearer ${accessToken}`
         }})
     const group: Group = await response.json();
     return group;
 }
 
-export default function GroupInfo( {groupId, apikey} : GroupInfoProps ) {
+export default function GroupInfo( {groupId, accessToken} : GroupInfoProps ) {
     const [ showing, setShowing ] = useState(false);
 
-    const query = useQuery(["group",groupId, apikey], () => getGroup(groupId, apikey) )
+    const query = useQuery(["group",groupId, accessToken], () => getGroup(groupId, accessToken) )
     const queryClient = useQueryClient();
     if (query.isLoading) {
       return <h2>Loading...</h2>;
@@ -44,7 +44,7 @@ export default function GroupInfo( {groupId, apikey} : GroupInfoProps ) {
             method: 'GET',
             headers: {
                 "ngrok-skip-browser-warning": "69420",
-                'Authorization': apikey
+                'Authorization': `Bearer ${accessToken}`
             }})
         const group: Group = await response.json();
         queryClient.invalidateQueries('group');
@@ -56,7 +56,7 @@ export default function GroupInfo( {groupId, apikey} : GroupInfoProps ) {
             method: 'PUT',
             headers: {
                 "ngrok-skip-browser-warning": "69420",
-                'Authorization': apikey
+                'Authorization': `Bearer ${accessToken}`
             }})
         const group: Group = await response.json();
         queryClient.invalidateQueries('group');
@@ -84,9 +84,9 @@ export default function GroupInfo( {groupId, apikey} : GroupInfoProps ) {
             <div className='md:col-span-3'>
                 <div className="page-header">
                     <h2 className='text-lg font-semibold text-zinc-100'>Profiles</h2>
-                    <AddProfileToGroupDialog  apikey={apikey} groupId={groupId} />
+                    <AddProfileToGroupDialog  accessToken={accessToken} groupId={groupId} />
                 </div>
-                <ProfileList groupId={groupId} apikey={apikey} />
+                <ProfileList groupId={groupId} accessToken={accessToken} />
             </div>
         </div>
     )

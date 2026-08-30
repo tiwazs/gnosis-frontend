@@ -11,11 +11,11 @@ interface GroupOptionProps {
     name: string
     description: string
     dataset: string
-    apikey: string
+    accessToken: string
     className?: string
 }
 
-export default function GroupOption({groupId, name, description, dataset, apikey, className}:GroupOptionProps) {
+export default function GroupOption({groupId, name, description, dataset, accessToken, className}:GroupOptionProps) {
     const router = useRouter();
     // TODO: Remove this once use hook is fixed
     const queryClient = useQueryClient();
@@ -26,7 +26,7 @@ export default function GroupOption({groupId, name, description, dataset, apikey
                 method: "DELETE",
                 headers: {
                     "ngrok-skip-browser-warning": "69420",
-                'Authorization': apikey
+                'Authorization': `Bearer ${accessToken}`
                 },
             });
             console.log(`Response: ${JSON.stringify(response)}`);

@@ -9,31 +9,31 @@ interface Profile {
 
 interface ProfileInfoProps {
     profileId: string
-    apikey: string
+    accessToken: string
 }
 
-const getProfile = async (profileId: string, apikey: string) => {
+const getProfile = async (profileId: string, accessToken: string) => {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/profile/${profileId}`, {
         method: 'GET',
         headers: {
             "ngrok-skip-browser-warning": "69420",
-            'Authorization': apikey
+            'Authorization': `Bearer ${accessToken}`
         }
     });
     const profile: Profile = await response.json();
     return profile;
 }
 
-export default function ProfileInfo({ profileId, apikey }: ProfileInfoProps) {
+export default function ProfileInfo({ profileId, accessToken }: ProfileInfoProps) {
     const [profile, setProfile] = useState<Profile | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        getProfile(profileId, apikey).then(data => {
+        getProfile(profileId, accessToken).then(data => {
             setProfile(data);
             setLoading(false);
         });
-    }, [profileId, apikey]);
+    }, [profileId, accessToken]);
 
     const capitalize = (text: string) => {
         return text.charAt(0).toUpperCase() + text.slice(1);
@@ -50,9 +50,9 @@ export default function ProfileInfo({ profileId, apikey }: ProfileInfoProps) {
             <div className='md:col-span-3'>
                 <div className="page-header">
                     <h2 className='text-lg font-semibold text-zinc-100'>Images</h2>
-                    <NewImageDialog profileId={profileId} apikey={apikey} />
+                    <NewImageDialog profileId={profileId} accessToken={accessToken} />
                 </div>
-                <ImageList profileId={profileId} apikey={apikey} />
+                <ImageList profileId={profileId} accessToken={accessToken} />
             </div>
         </div>
     )

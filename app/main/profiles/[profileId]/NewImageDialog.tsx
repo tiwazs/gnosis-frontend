@@ -13,10 +13,10 @@ interface CreateImageFormOptions {
 
 interface NewImageDialogProps {
     profileId: string;
-    apikey: string;
+    accessToken: string;
 }
 
-export default function NewimageDialog({profileId, apikey}:NewImageDialogProps) {
+export default function NewimageDialog({profileId, accessToken}:NewImageDialogProps) {
     let [isOpen, setIsOpen] = useState(false);
     const router = useRouter();
     const { register, handleSubmit, watch, formState: { errors } } = useForm<CreateImageFormOptions>();
@@ -36,7 +36,7 @@ export default function NewimageDialog({profileId, apikey}:NewImageDialogProps) 
               method: "POST",
               headers: {
                   "ngrok-skip-browser-warning": "69420",
-                'Authorization': apikey
+                'Authorization': `Bearer ${accessToken}`
               },
               body: form
           });

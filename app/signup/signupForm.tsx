@@ -1,7 +1,8 @@
 'use client';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
-
+import { signIn } from 'next-auth/react';
+import { useState } from 'react';
 
 interface SignupFormClassOptions {
     className?: string
@@ -16,10 +17,35 @@ interface SignupFormOptions {
 }
 
 const SignupForm = ({className}: SignupFormClassOptions) => {
-    const { register, handleSubmit, watch, formState: { errors } } = useForm<SignupFormOptions>();
+    const { register, handleSubmit } = useForm<SignupFormOptions>();
     const router = useRouter();
+    const [error, setError] = useState("");
 
-    const onSubmit: SubmitHandler<SignupFormOptions> = data => console.log(data);
+    const onSubmit: SubmitHandler<SignupFormOptions> = async (data) => {
+        setError("");
+        const api = (process.env.NEXT_PUBLIC_API_URL || "").replace(/\/$/, "");
+        const response = await fetch(`${api}/api/access/register`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+        });
+        if (!response.ok) {
+            const body = await response.json().catch(() => ({}));
+            setError(body.error || "Could not create account");
+            return;
+        }
+        const result = await signIn("credentials", {
+            email: data.email,
+            password: data.password,
+            redirect: false,
+        });
+        if (result?.error) {
+            router.push("/login");
+            return;
+        }
+        router.push("/main");
+        router.refresh();
+    };
     const redirectToLogin = () => router.push('/login');
 
     return (
@@ -62,6 +88,7 @@ const SignupForm = ({className}: SignupFormClassOptions) => {
                         placeholder="Last name"
                     />
                 </div>
+                {error && <p className="text-sm text-red-400">{error}</p>}
                 <button type="submit" className='btn-primary mt-2 w-full py-2.5'>
                     Sign up
                 </button>

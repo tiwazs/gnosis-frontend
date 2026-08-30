@@ -14,7 +14,7 @@ interface ImageOptionProps {
     coder: string
     isCoded: boolean
     imgSrc: string
-    apikey: string
+    accessToken: string
     className?: string
 }
 
@@ -23,7 +23,7 @@ interface EncodeImage {
     imageIds: string[]
 }
 
-export default function ImageOption({imageId, profileId, name, coder, isCoded, imgSrc, apikey, className}:ImageOptionProps) {
+export default function ImageOption({imageId, profileId, name, coder, isCoded, imgSrc, accessToken, className}:ImageOptionProps) {
     const router = useRouter();
     // TODO: Remove this once use hook is fixed
     const queryClient = useQueryClient();
@@ -41,7 +41,7 @@ export default function ImageOption({imageId, profileId, name, coder, isCoded, i
                 headers: {
                     "Content-Type": "application/json",
                     "ngrok-skip-browser-warning": "69420",
-                'Authorization': apikey
+                'Authorization': `Bearer ${accessToken}`
                 },
                 body: JSON.stringify(encodeImageRequest)
             });
@@ -61,7 +61,7 @@ export default function ImageOption({imageId, profileId, name, coder, isCoded, i
                 method: "DELETE",
                 headers: {
                     "ngrok-skip-browser-warning": "69420",
-                'Authorization': apikey
+                'Authorization': `Bearer ${accessToken}`
                 },
             });
             console.log(`Response: ${JSON.stringify(response)}`);

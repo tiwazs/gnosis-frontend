@@ -13,10 +13,10 @@ interface CreateProfileFormOptions {
 
 interface NewProfileDialogProps {
     userId: string;
-    apikey: string;
+    accessToken: string;
 }
 
-export default function NewProfileDialog({userId, apikey}:NewProfileDialogProps) {
+export default function NewProfileDialog({userId, accessToken}:NewProfileDialogProps) {
     let [isOpen, setIsOpen] = useState(false);
     const router = useRouter();
     const { register, handleSubmit, watch, formState: { errors } } = useForm<CreateProfileFormOptions>();
@@ -33,7 +33,7 @@ export default function NewProfileDialog({userId, apikey}:NewProfileDialogProps)
                 headers: {
                     "Content-Type": "application/json",
                     "ngrok-skip-browser-warning": "69420",
-                'Authorization': apikey
+                'Authorization': `Bearer ${accessToken}`
                 },
                 body: JSON.stringify(data)
             });

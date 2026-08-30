@@ -5,16 +5,16 @@ import ProfileOption from './ProfileOption';
 
 interface ProfilesProps {
     userId: string
-    apikey: string
+    accessToken: string
 }
 
-const getProfiles = async (userId: string, apikey: string) => {
+const getProfiles = async (userId: string, accessToken: string) => {
     try{
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/profile/user/${userId}`, {
             method: 'GET',
             headers: {
                 "ngrok-skip-browser-warning": "69420",
-                'Authorization': apikey
+                'Authorization': `Bearer ${accessToken}`
             }})
         const profiles: Profile[] = await response.json();
         return profiles;
@@ -24,10 +24,10 @@ const getProfiles = async (userId: string, apikey: string) => {
     }
 }
 
-function ProfileList({userId, apikey}: ProfilesProps) {
+function ProfileList({userId, accessToken}: ProfilesProps) {
     // TODO: Remove this once use hook is fixed
-    //const profiles = use( getProfiles(userId, apikey) );
-    const query = useQuery(["profiles",userId, apikey], () => getProfiles(userId, apikey) )
+    //const profiles = use( getProfiles(userId, accessToken) );
+    const query = useQuery(["profiles",userId, accessToken], () => getProfiles(userId, accessToken) )
     if (query.isLoading) {
       return <h2 className="text-sm text-zinc-500">Loading...</h2>;
     }
@@ -41,7 +41,7 @@ function ProfileList({userId, apikey}: ProfilesProps) {
                     profileId={profile.id}
                     name={profile.name}
                     description={profile.bio!}
-                    apikey={apikey}
+                    accessToken={accessToken}
                     coded={true}
                 />
                 </div>

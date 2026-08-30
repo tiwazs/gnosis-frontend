@@ -29,7 +29,7 @@ export class ApiFaceProcessingService {
     }
     
     // Class Methods
-    async postFaceProcessingStreamSDP(data: RtcOfferDataModel, apikey: string, graph: ProcessingGraph): Promise<any> {
+    async postFaceProcessingStreamSDP(data: RtcOfferDataModel, accessToken: string, graph: ProcessingGraph): Promise<any> {
         const payload = {
             ...graph,
             ...data,
@@ -41,7 +41,7 @@ export class ApiFaceProcessingService {
             headers: {
                 'Content-Type': 'application/json',
                 "ngrok-skip-browser-warning": "69420",
-                'Authorization': `Bearer ${apikey}`
+                'Authorization': `Bearer ${accessToken}`
             },
             body: JSON.stringify(payload),
         })
@@ -115,7 +115,7 @@ export class FaceProcessingStream{
     // Waits for Ice to complete. Then sends the offer to the  other peers
     // through an endpoint on the signaling server, the other peer sends the answer sdp
     // and then use this sdp to set the remote description and complete the connection
-    negotiate = async (apikey: string, graph: ProcessingGraph): Promise<void> => {
+    negotiate = async (accessToken: string, graph: ProcessingGraph): Promise<void> => {
         try{
             // Creates Offer sdp to set the local Description
             const offer = await this.pc.createOffer();
@@ -149,7 +149,7 @@ export class FaceProcessingStream{
             let offerModel:RtcOfferDataModel = {sdp, type}
             
             // Sending the offer and getting the answer
-            const answer = await this.apiFaceProcessingService.postFaceProcessingStreamSDP(offerModel, apikey, graph);
+            const answer = await this.apiFaceProcessingService.postFaceProcessingStreamSDP(offerModel, accessToken, graph);
 
             // Setting the remote Description once an answer is gotten
             await this.pc.setRemoteDescription(answer);
@@ -162,7 +162,7 @@ export class FaceProcessingStream{
     }
 
     // Function to start The WebRTC connection process
-    async start(apikey: string, graph: ProcessingGraph): Promise<MediaStream> {
+    async start(accessToken: string, graph: ProcessingGraph): Promise<MediaStream> {
         let resolution: string;
         let resolution_vals: string[];
         let constraints: any;
@@ -192,9 +192,9 @@ export class FaceProcessingStream{
             } catch (error) {
                 console.log(error);
             }
-            await this.negotiate(apikey, graph);                
+            await this.negotiate(accessToken, graph);                
         } else {
-            await this.negotiate(apikey, graph);
+            await this.negotiate(accessToken, graph);
         }
         
         // Waiting for the video stream to be available before returning it

@@ -14,10 +14,10 @@ interface CreateGroupFormOptions {
 
 interface NewGroupDialogProps {
     userId: string;
-    apikey: string;
+    accessToken: string;
 }
 
-export default function NewGroupDialog({userId, apikey}:NewGroupDialogProps) {
+export default function NewGroupDialog({userId, accessToken}:NewGroupDialogProps) {
     let [isOpen, setIsOpen] = useState(false);
     const router = useRouter();
     const { register, handleSubmit, watch, formState: { errors } } = useForm<CreateGroupFormOptions>();
@@ -34,7 +34,7 @@ export default function NewGroupDialog({userId, apikey}:NewGroupDialogProps) {
                 headers: {
                     "Content-Type": "application/json",
                     "ngrok-skip-browser-warning": "69420",
-                'Authorization': apikey
+                'Authorization': `Bearer ${accessToken}`
                 },
                 body: JSON.stringify(data)
             });

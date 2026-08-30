@@ -38,7 +38,7 @@ const FaceRecognitionSelector: NextPage = () => {
                     <button className={`seg-item ${option === "snap" ? "seg-item-active" : ""}`} onClick={()=>selectOption("snap")}>Snap</button>
                 </div>
             </div>
-            <GroupSelection option={option} userId={session.userId as string} apikey={session.apikey as string}/>
+            <GroupSelection option={option} userId={session.userId as string} accessToken={session.accessToken as string}/>
         </div>
     );
 };

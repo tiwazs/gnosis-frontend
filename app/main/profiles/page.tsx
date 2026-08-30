@@ -26,11 +26,11 @@ const ProfilesPage = () => {
                     <p className="page-kicker">Library</p>
                     <h1 className="page-title">Profiles</h1>
                 </div>
-                <NewProfileDialog userId={session.userId as string} apikey={session.apikey as string} />
+                <NewProfileDialog userId={session.userId as string} accessToken={session.accessToken as string} />
             </div>
             <div className='space-y-3'>
                 <Suspense fallback={<div className="text-emerald-400/80">Loading...</div>}>
-                    <ProfileList userId={session.userId as string} apikey={session.apikey as string} />
+                    <ProfileList userId={session.userId as string} accessToken={session.accessToken as string} />
                 </Suspense>
             </div>
         </div>

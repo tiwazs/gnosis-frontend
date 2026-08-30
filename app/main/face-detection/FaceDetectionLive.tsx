@@ -15,7 +15,7 @@ function FaceDetectionLive(): any {
     const startVideo = async () => {
         try {
             console.log('start video' + JSON.stringify(session));
-            const stream:MediaStream = await faceDetectionStream.start(session?.apikey as string, {
+            const stream:MediaStream = await faceDetectionStream.start(session?.accessToken as string, {
                 origin: { name: "frontend", args: null },
                 processor: { name: "recognizer-api", args: { type: "detection" } },
                 destination: { name: "frontend", args: null },

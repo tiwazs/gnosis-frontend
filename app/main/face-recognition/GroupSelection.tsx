@@ -7,13 +7,13 @@ import { useQuery } from 'react-query'
 import FaceRecognitionSnap from './FaceRecognitionSnap'
 import FaceRecognitionLive from './FaceRecognitionLive'
 
-const getCodedGroups = async (userId: string, apikey: string) => {
+const getCodedGroups = async (userId: string, accessToken: string) => {
   try{
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/group/user/coded/${userId}`, {
           method: 'GET',
           headers: {
               "ngrok-skip-browser-warning": "69420",
-                'Authorization': apikey
+                'Authorization': `Bearer ${accessToken}`
           }})
       const groups: Group[] = await response.json();
       return groups;
@@ -26,11 +26,11 @@ const getCodedGroups = async (userId: string, apikey: string) => {
 interface GroupSelectionProps {
   option: string;
   userId: string;
-  apikey: string;
+  accessToken: string;
 }
 
-export default function GroupSelection({option, userId, apikey}: GroupSelectionProps) {
-    const query = useQuery(["coded-groups", userId, apikey], () => getCodedGroups(userId, apikey) );
+export default function GroupSelection({option, userId, accessToken}: GroupSelectionProps) {
+    const query = useQuery(["coded-groups", userId, accessToken], () => getCodedGroups(userId, accessToken) );
     const [selected, setSelected] = useState<Group | undefined>(undefined)
     
     // List of the coded available groups

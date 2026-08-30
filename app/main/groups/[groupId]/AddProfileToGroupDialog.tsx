@@ -7,16 +7,16 @@ import { RadioGroup } from '@headlessui/react'
 
 interface AddProfileToGroupDialogProps {
     groupId: string;
-    apikey: string;
+    accessToken: string;
 }
 
-const getUnassignedProfiles = async (groupId: string, apikey: string) => {
+const getUnassignedProfiles = async (groupId: string, accessToken: string) => {
   try{
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/profile/not-in-group/${groupId}`, {
           method: 'GET',
           headers: {
               "ngrok-skip-browser-warning": "69420",
-                'Authorization': apikey
+                'Authorization': `Bearer ${accessToken}`
           }})
       const profiles: Profile[] = await response.json();
       return profiles;
@@ -31,11 +31,11 @@ interface ProfileSel {
   toAdd: boolean;
 }
 
-export default function AddProfileToGroupDialog({groupId, apikey}:AddProfileToGroupDialogProps) {
+export default function AddProfileToGroupDialog({groupId, accessToken}:AddProfileToGroupDialogProps) {
     let [isOpen, setIsOpen] = useState(false);
 
     // List of the unsassigned profiles to the group to populate the list radiogroup
-    const query = useQuery(["unassigned-profiles",groupId, apikey], () => getUnassignedProfiles(groupId, apikey) );
+    const query = useQuery(["unassigned-profiles",groupId, accessToken], () => getUnassignedProfiles(groupId, accessToken) );
     
     // List of profiles to add to group
     let [profilesSel, setProfilesSel] = useState<ProfileSel[]>([]);
@@ -93,7 +93,7 @@ export default function AddProfileToGroupDialog({groupId, apikey}:AddProfileToGr
                 headers: {
                     "Content-Type": "application/json",
                     "ngrok-skip-browser-warning": "69420",
-                'Authorization': apikey
+                'Authorization': `Bearer ${accessToken}`
                 },
                 body: JSON.stringify(data)
             });

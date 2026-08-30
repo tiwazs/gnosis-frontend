@@ -26,7 +26,7 @@ const ProfilePage = ( {params: {profileId}}: ProfilePageProps ) => {
     return (
         <>                          
             <Suspense fallback={<div className="text-emerald-400/80">Loading...</div>}>
-                <ProfileInfo profileId={profileId} apikey={session.apikey as string} />
+                <ProfileInfo profileId={profileId} accessToken={session.accessToken as string} />
             </Suspense>
         </>
     );
