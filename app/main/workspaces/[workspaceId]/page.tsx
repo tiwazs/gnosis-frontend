@@ -1,8 +1,8 @@
 'use client';
 
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { useParams } from "next/navigation";
+import { useRequireSession } from "../../../../lib/useRequireSession";
 import { useQuery } from "react-query";
 import {
     MdDevices,
@@ -17,20 +17,19 @@ const defaultDescription =
     "Deploy vision and IoT services from this workspace, then attach the devices, profiles, and groups they use.";
 
 export default function WorkspaceHomePage() {
-    const router = useRouter();
     const params = useParams();
     const workspaceId = String(params.workspaceId || "");
 
-    const { status } = useSession({
-        required: true,
-        onUnauthenticated() {
-            router.push("/login");
-        },
-    });
+    const { data: session, status } = useRequireSession();
 
-    const query = useQuery(["workspace", workspaceId], () => getWorkspace(workspaceId), {
-        enabled: Boolean(workspaceId),
-    });
+    const jwt = session?.accessToken;
+    const query = useQuery(
+        ["workspace", workspaceId, jwt],
+        () => getWorkspace(jwt as string, workspaceId),
+        {
+            enabled: Boolean(workspaceId && jwt),
+        },
+    );
     const workspace = query.data;
 
     if (status === "loading" || query.isLoading) {

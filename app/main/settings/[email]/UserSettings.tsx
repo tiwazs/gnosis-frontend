@@ -10,15 +10,17 @@ interface SettingsProps {
 }
 
 const UserSettings = ({ user }: SettingsProps) => {
-    const { data: session, status } = useSession({ required: true });
+    const { data: session, status } = useSession();
     const sessionEmail = session?.user?.email || (session as any)?.userEmail;
     const ownsAccount = sessionEmail === user.email;
+
+    const jwt = session?.accessToken as string | undefined;
 
     if (status === "loading") {
         return <div className="text-sm text-zinc-500">Loading account…</div>;
     }
 
-    if (!ownsAccount) {
+    if (!ownsAccount || !jwt) {
         return (
             <div className="card max-w-lg">
                 <p className="page-kicker">Account</p>
@@ -53,6 +55,7 @@ const UserSettings = ({ user }: SettingsProps) => {
             <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-zinc-400">Profile</h3>
             <SettingField
                 userId={user.id}
+                jwt={jwt}
                 label="Username"
                 field="name"
                 value={user.name ?? ""}
@@ -60,6 +63,7 @@ const UserSettings = ({ user }: SettingsProps) => {
             />
             <SettingField
                 userId={user.id}
+                jwt={jwt}
                 label="First name"
                 field="firstName"
                 value={user.firstName ?? ""}
@@ -67,6 +71,7 @@ const UserSettings = ({ user }: SettingsProps) => {
             />
             <SettingField
                 userId={user.id}
+                jwt={jwt}
                 label="Last name"
                 field="lastName"
                 value={user.lastName ?? ""}
@@ -74,6 +79,7 @@ const UserSettings = ({ user }: SettingsProps) => {
             />
             <SettingField
                 userId={user.id}
+                jwt={jwt}
                 label="Email"
                 field="email"
                 value={user.email ?? ""}
@@ -83,6 +89,7 @@ const UserSettings = ({ user }: SettingsProps) => {
             <h3 className="mb-3 mt-10 text-sm font-semibold uppercase tracking-wide text-zinc-400">Security</h3>
             <SettingField
                 userId={user.id}
+                jwt={jwt}
                 label="Password"
                 field="password"
                 value=""
@@ -93,6 +100,7 @@ const UserSettings = ({ user }: SettingsProps) => {
             <h3 className="mb-3 mt-10 text-sm font-semibold uppercase tracking-wide text-zinc-400">API</h3>
             <ApiKeyFormCard
                 id={user.id}
+                jwt={jwt}
                 displayOption="API key"
                 value={user.apiKey || ""}
                 description="For scripts and devices. The app uses a login JWT instead."

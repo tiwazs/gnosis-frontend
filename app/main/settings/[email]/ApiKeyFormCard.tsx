@@ -5,13 +5,14 @@ import { useState } from "react";
 
 interface DisplayFormCardProps {
     id: string,
+    jwt: string,
     displayOption: string,
     value: string,
     description: string,
     className?: string
 }
 
-const DisplayFormCard = ({id, displayOption, value, description, className}:DisplayFormCardProps) => {
+const DisplayFormCard = ({id, jwt, displayOption, value, description, className}:DisplayFormCardProps) => {
     const [showing, setShowing] = useState(false);
     const [apiKey, setApiKey] = useState(value || "");
     const [status, setStatus] = useState<string | null>(null);
@@ -21,7 +22,12 @@ const DisplayFormCard = ({id, displayOption, value, description, className}:Disp
         setBusy(true);
         setStatus(null);
         try {
-            const response = await fetch(`/api/user/genapikey/${id}`);
+            const gateway = (process.env.NEXT_PUBLIC_API_URL || "").replace(/\/$/, "");
+            const response = await fetch(`${gateway}/api/user/genapikey/${id}`, {
+                method: "GET",
+                credentials: "omit",
+                headers: { Authorization: `Bearer ${jwt}` },
+            });
             const data: User & { message?: string } = await response.json();
             if (!response.ok || !data.apiKey) {
                 setStatus(data.message ?? "Could not generate API key");

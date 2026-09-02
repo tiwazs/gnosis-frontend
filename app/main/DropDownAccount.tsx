@@ -2,8 +2,8 @@
 
 import { Fragment } from 'react'
 import { Menu, Transition } from '@headlessui/react'
-import { useSession, signOut } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { signOut } from 'next-auth/react';
+import { useRequireSession } from '../../lib/useRequireSession';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
@@ -14,15 +14,9 @@ interface DropUpAccountProps {
 }
 
 const DropDownAccount = ({up}:DropUpAccountProps)=> {
-    const router = useRouter();
-    const { data: session, status } = useSession({
-        required: true,
-        onUnauthenticated() {
-          router.push('/login');
-        },
-    })
+    const { data: session, status } = useRequireSession();
 
-    if(status === "loading") {
+    if(status === "loading" || status === "unauthenticated") {
         return <div className="h-8 w-8 animate-pulse rounded-full bg-white/10" />
     }
     return (

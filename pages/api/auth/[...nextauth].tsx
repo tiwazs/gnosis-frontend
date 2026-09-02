@@ -1,32 +1,13 @@
+import type { NextApiRequest, NextApiResponse } from "next"
 import NextAuth, { NextAuthOptions } from "next-auth"
 import GithubProvider from "next-auth/providers/github"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import prisma from "../../../lib/prisma";
+import { ensureGatewayJwt } from "../../../lib/gatewayJwt";
 
 function mainApiUrl(): string {
   return (process.env.MAIN_API_URL || process.env.NEXT_PUBLIC_API_URL || "").replace(/\/$/, "");
-}
-
-async function issueApiToken(userId: string): Promise<string | undefined> {
-  const secret = process.env.GATEWAY_INTERNAL_SECRET;
-  const base = mainApiUrl();
-  if (!secret || !base) {
-    return undefined;
-  }
-  const response = await fetch(`${base}/internal/auth/token`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Gateway-Secret": secret,
-    },
-    body: JSON.stringify({ userId }),
-  });
-  if (!response.ok) {
-    return undefined;
-  }
-  const data = await response.json();
-  return typeof data.token === "string" ? data.token : undefined;
 }
 
 export const authOptions: NextAuthOptions = {
@@ -72,28 +53,33 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user, account }) {
+    async jwt({ token, user }) {
       if (user) {
         token.uid = user.id;
         token.email = user.email;
-        const fromCredentials = (user as { accessToken?: string }).accessToken;
-        if (fromCredentials) {
-          token.accessToken = fromCredentials;
-        } else if (account?.provider === "github") {
-          token.accessToken = await issueApiToken(String(user.id));
+        const fromLogin = (user as { accessToken?: string }).accessToken;
+        if (fromLogin) {
+          token.accessToken = fromLogin;
         }
       }
-      if (!token.accessToken && token.uid) {
-        token.accessToken = await issueApiToken(String(token.uid));
+      const userId = token.uid || token.sub;
+      if (userId) {
+        const minted = ensureGatewayJwt(
+          String(userId),
+          String(token.email || ""),
+          token.accessToken,
+        );
+        if (minted) {
+          token.accessToken = minted;
+        }
       }
       return token;
     },
     async session({ session, token }) {
-      if (session?.user) {
-        session.accessToken = token.accessToken;
-        session.userId = token.uid;
-        session.userEmail = token.email;
-      }
+      const userId = String(token.uid || token.sub || "");
+      session.userId = userId;
+      session.userEmail = token.email;
+      session.accessToken = ensureGatewayJwt(userId, String(token.email || ""), token.accessToken);
       return session;
     },
   },
@@ -108,4 +94,6 @@ export const authOptions: NextAuthOptions = {
   },
 }
 
-export default NextAuth(authOptions)
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  await NextAuth(req, res, authOptions);
+}

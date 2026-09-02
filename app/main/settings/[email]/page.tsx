@@ -1,9 +1,8 @@
 'use client';
 
 import { User } from "@prisma/client";
-import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRequireSession } from "../../../../lib/useRequireSession";
 import UserSettings from "./UserSettings";
 
 type PageProps = {
@@ -13,28 +12,29 @@ type PageProps = {
 }
 
 const SettingsPage = ({ params: { email } }: PageProps) => {
-    const router = useRouter();
-    const { data: session, status } = useSession({
-        required: true,
-        onUnauthenticated() {
-            router.push("/login");
-        },
-    });
+    const { data: session, status } = useRequireSession();
     const [user, setUser] = useState<User | null>(null);
     const [error, setError] = useState<string | null>(null);
     const userId = session?.userId as string | undefined;
     const routeEmail = decodeURIComponent(email);
 
+    const jwt = session?.accessToken;
+    const gateway = (process.env.NEXT_PUBLIC_API_URL || "").replace(/\/$/, "");
+
     useEffect(() => {
-        if (!userId) return;
-        fetch(`/api/user/${userId}`)
+        if (!userId || !jwt) return;
+        fetch(`${gateway}/api/user/id/${userId}`, {
+            method: "GET",
+            credentials: "omit",
+            headers: { Authorization: `Bearer ${jwt}` },
+        })
             .then(async (res) => {
                 if (!res.ok) throw new Error("Could not load account");
                 return res.json();
             })
             .then(setUser)
             .catch((e) => setError(e.message));
-    }, [userId]);
+    }, [userId, jwt, gateway]);
 
     if (status === "loading" || (!user && !error)) {
         return <div className="text-sm text-zinc-500">Loading account…</div>;

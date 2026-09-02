@@ -1,23 +1,23 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { IoSearch } from 'react-icons/io5';
+import { useRequireSession } from '../../lib/useRequireSession';
 import NewWorkspaceDialog from './NewWorkspaceDialog';
 import WorkspaceList from './WorkspaceList';
 
 const WorkspacesPage = () => {
-    const router = useRouter();
     const [search, setSearch] = useState('');
-    const { status } = useSession({
-        required: true,
-        onUnauthenticated() {
-            router.push('/login');
-        },
-    });
+    const { data: session, status } = useRequireSession();
 
-    if (status === 'loading') return <div className="text-emerald-400/80">Loading...</div>;
+    if (status === 'loading' || status === 'unauthenticated') {
+        return <div className="text-emerald-400/80">Loading...</div>;
+    }
+
+    const jwt = session?.accessToken;
+    if (!jwt) {
+        return <div className="empty-state">Missing JWT. Sign out and sign in again.</div>;
+    }
 
     return (
         <div>
@@ -38,10 +38,10 @@ const WorkspacesPage = () => {
                             placeholder="Search workspaces"
                         />
                     </label>
-                    <NewWorkspaceDialog />
+                    <NewWorkspaceDialog jwt={jwt} />
                 </div>
             </div>
-            <WorkspaceList search={search} />
+            <WorkspaceList search={search} jwt={jwt} />
         </div>
     );
 };

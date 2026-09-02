@@ -7,9 +7,19 @@ export type Workspace = {
     description?: string;
 };
 
-export async function getWorkspace(id: string): Promise<Workspace | null> {
-    const workspaces = await getWorkspaces();
-    return workspaces.find((workspace) => workspace.id === id) ?? null;
+function gatewayBase() {
+    return (process.env.NEXT_PUBLIC_API_URL || "").replace(/\/$/, "");
+}
+
+function workspaceUrl(path: string) {
+    return `${gatewayBase()}/workspace/${path.replace(/^\//, "")}`;
+}
+
+function jwtHeaders(jwt: string, json = false): HeadersInit {
+    return {
+        ...(json ? { "Content-Type": "application/json" } : {}),
+        Authorization: `Bearer ${jwt}`,
+    };
 }
 
 async function parseJson(response: Response) {
@@ -24,14 +34,11 @@ async function parseJson(response: Response) {
     }
 }
 
-function workspaceUrl(path: string) {
-    return `/api/workspace/${path.replace(/^\//, "")}`;
-}
-
-export async function getWorkspaces(): Promise<Workspace[]> {
+export async function getWorkspaces(jwt: string): Promise<Workspace[]> {
     const response = await fetch(workspaceUrl("workspaces"), {
         method: "GET",
-        credentials: "same-origin",
+        credentials: "omit",
+        headers: jwtHeaders(jwt),
     });
     const data = await parseJson(response);
     if (!response.ok) {
@@ -41,11 +48,16 @@ export async function getWorkspaces(): Promise<Workspace[]> {
     return Array.isArray(data) ? data : [];
 }
 
-export async function createWorkspace(name: string): Promise<Workspace> {
+export async function getWorkspace(jwt: string, id: string): Promise<Workspace | null> {
+    const workspaces = await getWorkspaces(jwt);
+    return workspaces.find((workspace) => workspace.id === id) ?? null;
+}
+
+export async function createWorkspace(jwt: string, name: string): Promise<Workspace> {
     const response = await fetch(workspaceUrl("workspaces"), {
         method: "POST",
-        credentials: "same-origin",
-        headers: { "Content-Type": "application/json" },
+        credentials: "omit",
+        headers: jwtHeaders(jwt, true),
         body: JSON.stringify({ name }),
     });
     const data = await parseJson(response);

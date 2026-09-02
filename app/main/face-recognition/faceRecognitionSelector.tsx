@@ -3,20 +3,13 @@
 import type { NextPage } from 'next'
 import { useState } from 'react';
 import GroupSelection from './GroupSelection';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useRequireSession } from '../../../lib/useRequireSession';
 
 const FaceRecognitionSelector: NextPage = () => {
     const [ option, setOption ] = useState<string>("live");
-    const router = useRouter();
-    const { data: session, status } = useSession({
-        required: true,
-        onUnauthenticated() {
-            router.push('/login');
-        },
-    })
+    const { data: session, status } = useRequireSession();
     
-    if(status === "loading") return <div className="text-emerald-400/80">Loading...</div> 
+    if(status === "loading" || status === "unauthenticated") return <div className="text-emerald-400/80">Loading...</div> 
     
     const selectOption = (option:string) => {
         setOption(option);

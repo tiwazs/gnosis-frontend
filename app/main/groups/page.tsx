@@ -1,23 +1,15 @@
 'use client';
 
-import type { NextPage } from 'next'
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useRequireSession } from '../../../lib/useRequireSession';
 import { Suspense } from 'react';
 import GroupList from './GroupList';
 import NewGroupDialog from './NewGroupDialog';
 
 const GroupsPage = () => {
     //const { data: session, status } = useSession({ required: true });
-    const { data: session, status } = useSession({
-        required: true,
-        onUnauthenticated() {
-            router.push('/login');
-        },
-    })
-    const router = useRouter();
+    const { data: session, status } = useRequireSession();
 
-    if(status === "loading") return <div className="text-emerald-400/80">Loading...</div>  
+    if(status === "loading" || status === "unauthenticated") return <div className="text-emerald-400/80">Loading...</div>  
 
     return (
         <div>              

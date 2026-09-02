@@ -36,8 +36,10 @@ const DisplayFormCard = ({id, displayOption, option, value, description, obscure
         console.log(`Submitting data:  ${JSON.stringify(data)}`);
 
         try{
-            const response = await fetch(`/api/user/${id}`, {
+            const gateway = (process.env.NEXT_PUBLIC_API_URL || "").replace(/\/$/, "");
+            const response = await fetch(`${gateway}/api/user/id/${id}`, {
                 method: "PUT",
+                credentials: "omit",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify(data)
             });

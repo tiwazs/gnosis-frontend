@@ -1,7 +1,6 @@
 'use client';
 
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRequireSession } from "../../../lib/useRequireSession";
 import ProfileList from "./ProfileList";
 import { IoAddSharp } from 'react-icons/io5';
 import { Suspense } from "react";
@@ -9,15 +8,9 @@ import NewProfileDialog from "./NewProfileDialog";
 
 const ProfilesPage = () => {
     //const { data: session, status } = useSession({ required: true });
-    const { data: session, status } = useSession({
-        required: true,
-        onUnauthenticated() {
-            router.push('/login');
-        },
-    })
-    const router = useRouter();
+    const { data: session, status } = useRequireSession();
 
-    if(status === "loading") return <div className="text-emerald-400/80">Loading...</div>  
+    if(status === "loading" || status === "unauthenticated") return <div className="text-emerald-400/80">Loading...</div>  
 
     return (
         <div>              

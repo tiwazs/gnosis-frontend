@@ -5,6 +5,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 
 interface SettingFieldProps {
     userId: string;
+    jwt: string;
     label: string;
     field: "name" | "firstName" | "lastName" | "email" | "password";
     value: string;
@@ -16,7 +17,7 @@ type FieldForm = {
     value: string;
 }
 
-const SettingField = ({ userId, label, field, value, description, password }: SettingFieldProps) => {
+const SettingField = ({ userId, jwt, label, field, value, description, password }: SettingFieldProps) => {
     const [editing, setEditing] = useState(false);
     const [saved, setSaved] = useState(value);
     const [status, setStatus] = useState<string | null>(null);
@@ -33,9 +34,14 @@ const SettingField = ({ userId, label, field, value, description, password }: Se
     const onSubmit: SubmitHandler<FieldForm> = async (data) => {
         setStatus(null);
         try {
-            const response = await fetch(`/api/user/${userId}`, {
+            const gateway = (process.env.NEXT_PUBLIC_API_URL || "").replace(/\/$/, "");
+            const response = await fetch(`${gateway}/api/user/id/${userId}`, {
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
+                credentials: "omit",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${jwt}`,
+                },
                 body: JSON.stringify({ [field]: data.value }),
             });
             const body = await response.json().catch(() => ({}));

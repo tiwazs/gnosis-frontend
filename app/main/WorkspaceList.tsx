@@ -5,10 +5,11 @@ import WorkspaceCard from "./WorkspaceCard";
 
 interface WorkspaceListProps {
     search: string;
+    jwt: string;
 }
 
-function WorkspaceList({ search }: WorkspaceListProps) {
-    const query = useQuery(["workspaces"], () => getWorkspaces());
+function WorkspaceList({ search, jwt }: WorkspaceListProps) {
+    const query = useQuery(["workspaces", jwt], () => getWorkspaces(jwt));
 
     const filtered = useMemo(() => {
         const workspaces = query.data ?? [];

@@ -9,7 +9,7 @@ import VideoElement from '../../../components/VideoElement';
 
 function FaceDetectionLive(): any {
     const [videoStream, setVideoStream] = useState<MediaStream>();
-    const { data: session, status } = useSession({ required: true });
+    const { data: session, status } = useSession();
     const faceDetectionStream = useRef(new FaceProcessingStream(`${process.env.NEXT_PUBLIC_API_URL}/api`)).current;
 
     const startVideo = async () => {

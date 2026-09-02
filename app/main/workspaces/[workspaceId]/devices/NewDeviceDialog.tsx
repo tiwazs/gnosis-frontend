@@ -3,31 +3,37 @@ import { Fragment, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { IoAddSharp } from "react-icons/io5";
 import { useQueryClient } from "react-query";
-import { createWorkspace } from "../../services/workspaceService";
+import { createDevice } from "../../../../../services/deviceService";
 
-interface CreateWorkspaceFormOptions {
+interface CreateDeviceFormOptions {
     name: string;
+    description?: string;
 }
 
-interface NewWorkspaceDialogProps {
+interface NewDeviceDialogProps {
+    workspaceId: string;
     jwt: string;
 }
 
-export default function NewWorkspaceDialog({ jwt }: NewWorkspaceDialogProps) {
+export default function NewDeviceDialog({ workspaceId, jwt }: NewDeviceDialogProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [submitError, setSubmitError] = useState("");
-    const { register, handleSubmit, reset } = useForm<CreateWorkspaceFormOptions>();
+    const { register, handleSubmit, reset } = useForm<CreateDeviceFormOptions>();
     const queryClient = useQueryClient();
 
-    const onSubmit: SubmitHandler<CreateWorkspaceFormOptions> = async (data) => {
+    const onSubmit: SubmitHandler<CreateDeviceFormOptions> = async (data) => {
         setSubmitError("");
         try {
-            await createWorkspace(jwt, data.name.trim());
+            await createDevice(jwt, {
+                workspaceId,
+                name: data.name.trim(),
+                description: data.description?.trim() || "",
+            });
             reset();
             setIsOpen(false);
-            queryClient.invalidateQueries("workspaces");
+            queryClient.invalidateQueries(["devices", workspaceId]);
         } catch (error) {
-            setSubmitError(error instanceof Error ? error.message : "Could not create workspace");
+            setSubmitError(error instanceof Error ? error.message : "Could not create device");
         }
     };
 
@@ -47,7 +53,7 @@ export default function NewWorkspaceDialog({ jwt }: NewWorkspaceDialogProps) {
                 type="button"
                 onClick={openModal}
                 className="btn-icon h-11 w-11 shrink-0 text-xl"
-                aria-label="New workspace"
+                aria-label="New device"
             >
                 <IoAddSharp />
             </button>
@@ -79,10 +85,10 @@ export default function NewWorkspaceDialog({ jwt }: NewWorkspaceDialogProps) {
                             >
                                 <Dialog.Panel className="modal-panel">
                                     <Dialog.Title as="h3" className="text-lg font-semibold text-zinc-100">
-                                        New workspace
+                                        New device
                                     </Dialog.Title>
                                     <p className="mt-2 text-sm text-zinc-400">
-                                        Create a workspace to group devices and vision pipelines.
+                                        Register a device in this workspace.
                                     </p>
                                     <form className="mt-2" onSubmit={handleSubmit(onSubmit)}>
                                         <input
@@ -91,6 +97,13 @@ export default function NewWorkspaceDialog({ jwt }: NewWorkspaceDialogProps) {
                                             type="text"
                                             name="name"
                                             placeholder="Name"
+                                        />
+                                        <textarea
+                                            {...register("description")}
+                                            className="input-field my-3"
+                                            name="description"
+                                            placeholder="Description"
+                                            rows={3}
                                         />
                                         {submitError && <p className="mb-3 text-sm text-red-400">{submitError}</p>}
                                         <div className="mt-4 flex justify-between">
