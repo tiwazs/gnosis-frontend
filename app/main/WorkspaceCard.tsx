@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 import type { Workspace } from "../../services/workspaceService";
 
@@ -21,7 +22,10 @@ export default function WorkspaceCard({ workspace }: WorkspaceCardProps) {
     const created = formatDate(workspace.created_at);
 
     return (
-        <article className="card card-hover flex min-h-[140px] flex-col justify-between">
+        <Link
+            href={`/main/workspaces/${workspace.id}`}
+            className="card card-hover flex min-h-[140px] flex-col justify-between"
+        >
             <div>
                 <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-emerald-400/80">
                     Workspace
@@ -33,6 +37,6 @@ export default function WorkspaceCard({ workspace }: WorkspaceCardProps) {
             ) : (
                 <p className="mt-4 text-sm text-zinc-500">Ready to use</p>
             )}
-        </article>
+        </Link>
     );
 }

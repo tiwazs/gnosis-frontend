@@ -4,7 +4,13 @@ export type Workspace = {
     owner_id: string;
     created_at: string;
     updated_at: string;
+    description?: string;
 };
+
+export async function getWorkspace(id: string): Promise<Workspace | null> {
+    const workspaces = await getWorkspaces();
+    return workspaces.find((workspace) => workspace.id === id) ?? null;
+}
 
 async function parseJson(response: Response) {
     const text = await response.text();

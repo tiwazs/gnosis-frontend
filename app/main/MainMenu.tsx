@@ -38,7 +38,7 @@ const MainMenu = () => {
                 <MainMenuCard 
                     title='Access Control'
                     description='Build allow lists and run a door or site as a recognition-backed gate.'
-                    icon='/main_menu_images/face_detection_icon.png'
+                    icon='/main_menu_images/access_control_icon.png'
                     redirectPath='/main/access-control'
                 />
                 <MainMenuCard 
