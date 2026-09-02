@@ -83,6 +83,9 @@ export const authOptions: NextAuthOptions = {
           token.accessToken = await issueApiToken(String(user.id));
         }
       }
+      if (!token.accessToken && token.uid) {
+        token.accessToken = await issueApiToken(String(token.uid));
+      }
       return token;
     },
     async session({ session, token }) {

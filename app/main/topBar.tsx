@@ -7,7 +7,7 @@ import Link from 'next/link';
 const TopBar = () => {
     return (
         <header className="sticky top-0 z-30 border-b border-white/5 bg-[#120e16]/80 backdrop-blur-xl">
-            <div className="mx-auto flex h-14 w-[min(1120px,calc(100%-1.5rem))] items-center justify-between">
+            <div className="mx-auto flex h-14 w-full items-center justify-between px-4 sm:px-6">
                 <Link href="/main" className="group flex items-center gap-2.5">
                     <span className="grid h-8 w-8 place-items-center rounded-lg bg-emerald-500/20 text-sm font-semibold text-emerald-300 ring-1 ring-emerald-400/25">
                         G

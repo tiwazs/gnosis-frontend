@@ -29,7 +29,7 @@ const UserSettings = ({ user }: SettingsProps) => {
     }
 
     return (
-        <div className="mx-auto max-w-3xl">
+        <div className="w-full">
             <div className="page-header">
                 <div>
                     <p className="page-kicker">Account</p>

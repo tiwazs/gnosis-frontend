@@ -37,7 +37,7 @@ const Home = () => {
             <div className="pointer-events-none absolute -right-16 top-40 h-80 w-80 rounded-full bg-fuchsia-700/15 blur-3xl" />
 
             <header className="sticky top-0 z-20 border-b border-white/5 bg-[#120e16]/80 backdrop-blur-xl">
-                <div className="mx-auto flex h-14 w-[min(1120px,calc(100%-1.5rem))] items-center justify-between">
+                <div className="mx-auto flex h-14 w-full items-center justify-between px-4 sm:px-6">
                     <Link href="/" className="flex items-center gap-2.5">
                         <span className="grid h-8 w-8 place-items-center rounded-lg bg-emerald-500/20 text-sm font-semibold text-emerald-300 ring-1 ring-emerald-400/25">
                             G
@@ -55,7 +55,7 @@ const Home = () => {
                 </div>
             </header>
 
-            <main className="relative mx-auto w-[min(1120px,calc(100%-1.5rem))] pb-24 pt-12 sm:pt-16">
+            <main className="relative mx-auto w-full px-4 pb-24 pt-12 sm:px-6 sm:pt-16">
                 <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
                     <div>
                         <p className="page-kicker">Computer vision workspace</p>
