@@ -9,7 +9,7 @@ import NewDeviceDialog from "./NewDeviceDialog";
 
 export default function DevicesPage() {
     const params = useParams();
-    const workspaceId = String(params.workspaceId || "");
+    const workspaceId = String(params?.workspaceId || "");
     const [search, setSearch] = useState("");
 
     const { data: session, status } = useRequireSession();

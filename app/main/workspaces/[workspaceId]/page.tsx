@@ -18,7 +18,7 @@ const defaultDescription =
 
 export default function WorkspaceHomePage() {
     const params = useParams();
-    const workspaceId = String(params.workspaceId || "");
+    const workspaceId = String(params?.workspaceId || "");
 
     const { data: session, status } = useRequireSession();
 
