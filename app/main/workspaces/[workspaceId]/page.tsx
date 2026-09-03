@@ -21,12 +21,7 @@ export default function WorkspaceHomePage() {
     const workspaceId = String(params?.workspaceId || "");
 
     const { data: session, status } = useRequireSession();
-
-    if (status === "loading" || status === "unauthenticated" || !session?.accessToken) {
-        return <div className="text-emerald-400/80">Loading...</div>;
-    }
-
-    const jwt = session.accessToken;
+    const jwt = session?.accessToken;
     const query = useQuery(
         ["workspace", workspaceId, jwt],
         () => getWorkspace(jwt as string, workspaceId),
@@ -36,7 +31,7 @@ export default function WorkspaceHomePage() {
     );
     const workspace = query.data;
 
-    if (status === "loading" || query.isLoading) {
+    if (status === "loading" || status === "unauthenticated" || !jwt || query.isLoading) {
         return <div className="text-emerald-400/80">Loading...</div>;
     }
 
