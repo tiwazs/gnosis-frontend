@@ -22,7 +22,11 @@ export default function WorkspaceHomePage() {
 
     const { data: session, status } = useRequireSession();
 
-    const jwt = session?.accessToken;
+    if (status === "loading" || status === "unauthenticated" || !session?.accessToken) {
+        return <div className="text-emerald-400/80">Loading...</div>;
+    }
+
+    const jwt = session.accessToken;
     const query = useQuery(
         ["workspace", workspaceId, jwt],
         () => getWorkspace(jwt as string, workspaceId),

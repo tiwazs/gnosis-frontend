@@ -1,3 +1,5 @@
+import { apiFetch } from "../lib/apiFetch";
+
 export type LoginDataModel = {
     email: string;
     password: string;
@@ -36,7 +38,7 @@ export class ApiFaceProcessingService {
         };
 
         const url = `${this.apiUrl}/processing/stream`;
-        const response = await fetch(url, {
+        const response = await apiFetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

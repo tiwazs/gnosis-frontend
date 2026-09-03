@@ -43,7 +43,7 @@ function DeviceList({ workspaceId, search, jwt }: DeviceListProps) {
             <div className="empty-state">
                 {search.trim()
                     ? "No devices match that search."
-                    : "No devices yet. Create one with the + button."}
+                    : "No paired devices yet. Generate a token with + and enter it on the device."}
             </div>
         );
     }

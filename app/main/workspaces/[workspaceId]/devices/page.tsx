@@ -14,19 +14,11 @@ export default function DevicesPage() {
 
     const { data: session, status } = useRequireSession();
 
-    if (status === "loading" || status === "unauthenticated") {
+    if (status === "loading" || status === "unauthenticated" || !session?.accessToken) {
         return <div className="text-emerald-400/80">Loading...</div>;
     }
 
-    const jwt = session?.accessToken;
-
-    if (!jwt) {
-        return (
-            <div className="empty-state">
-                Missing JWT. Sign out and sign in again.
-            </div>
-        );
-    }
+    const jwt = session.accessToken;
 
     return (
         <div>

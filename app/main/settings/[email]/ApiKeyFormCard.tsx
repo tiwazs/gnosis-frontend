@@ -2,6 +2,7 @@
 
 import { User } from "@prisma/client";
 import { useState } from "react";
+import { apiFetch } from "../../../../lib/apiFetch";
 
 interface DisplayFormCardProps {
     id: string,
@@ -23,7 +24,7 @@ const DisplayFormCard = ({id, jwt, displayOption, value, description, className}
         setStatus(null);
         try {
             const gateway = (process.env.NEXT_PUBLIC_API_URL || "").replace(/\/$/, "");
-            const response = await fetch(`${gateway}/api/user/genapikey/${id}`, {
+            const response = await apiFetch(`${gateway}/api/user/genapikey/${id}`, {
                 method: "GET",
                 credentials: "omit",
                 headers: { Authorization: `Bearer ${jwt}` },

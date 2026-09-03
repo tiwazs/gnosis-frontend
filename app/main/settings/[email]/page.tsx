@@ -3,6 +3,7 @@
 import { User } from "@prisma/client";
 import { useEffect, useState } from "react";
 import { useRequireSession } from "../../../../lib/useRequireSession";
+import { apiFetch } from "../../../../lib/apiFetch";
 import UserSettings from "./UserSettings";
 
 type PageProps = {
@@ -23,7 +24,7 @@ const SettingsPage = ({ params: { email } }: PageProps) => {
 
     useEffect(() => {
         if (!userId || !jwt) return;
-        fetch(`${gateway}/api/user/id/${userId}`, {
+        apiFetch(`${gateway}/api/user/id/${userId}`, {
             method: "GET",
             credentials: "omit",
             headers: { Authorization: `Bearer ${jwt}` },

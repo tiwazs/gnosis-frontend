@@ -1,14 +1,7 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
 import { IoAddSharp } from "react-icons/io5";
-import { useQueryClient } from "react-query";
-import { createDevice } from "../../../../../services/deviceService";
-
-interface CreateDeviceFormOptions {
-    name: string;
-    description?: string;
-}
+import { createDeviceRegistrationToken, RegistrationToken } from "../../../../../services/workspaceService";
 
 interface NewDeviceDialogProps {
     workspaceId: string;
@@ -17,33 +10,46 @@ interface NewDeviceDialogProps {
 
 export default function NewDeviceDialog({ workspaceId, jwt }: NewDeviceDialogProps) {
     const [isOpen, setIsOpen] = useState(false);
-    const [submitError, setSubmitError] = useState("");
-    const { register, handleSubmit, reset } = useForm<CreateDeviceFormOptions>();
-    const queryClient = useQueryClient();
+    const [busy, setBusy] = useState(false);
+    const [error, setError] = useState("");
+    const [copied, setCopied] = useState(false);
+    const [pairing, setPairing] = useState<RegistrationToken | null>(null);
 
-    const onSubmit: SubmitHandler<CreateDeviceFormOptions> = async (data) => {
-        setSubmitError("");
+    async function generateToken() {
+        setBusy(true);
+        setError("");
+        setCopied(false);
         try {
-            await createDevice(jwt, {
-                workspaceId,
-                name: data.name.trim(),
-                description: data.description?.trim() || "",
-            });
-            reset();
-            setIsOpen(false);
-            queryClient.invalidateQueries(["devices", workspaceId]);
-        } catch (error) {
-            setSubmitError(error instanceof Error ? error.message : "Could not create device");
+            const token = await createDeviceRegistrationToken(jwt, workspaceId);
+            setPairing(token);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : "Could not generate pairing token");
+        } finally {
+            setBusy(false);
         }
-    };
+    }
+
+    async function copyToken(token: string) {
+        try {
+            await navigator.clipboard.writeText(token);
+            setCopied(true);
+        } catch {
+            setError("Could not copy token");
+        }
+    }
 
     function closeModal() {
         setIsOpen(false);
-        setSubmitError("");
+        setError("");
+        setCopied(false);
+        setPairing(null);
+        setBusy(false);
     }
 
     function openModal() {
-        setSubmitError("");
+        setError("");
+        setCopied(false);
+        setPairing(null);
         setIsOpen(true);
     }
 
@@ -53,7 +59,7 @@ export default function NewDeviceDialog({ workspaceId, jwt }: NewDeviceDialogPro
                 type="button"
                 onClick={openModal}
                 className="btn-icon h-11 w-11 shrink-0 text-xl"
-                aria-label="New device"
+                aria-label="Pair device"
             >
                 <IoAddSharp />
             </button>
@@ -85,34 +91,55 @@ export default function NewDeviceDialog({ workspaceId, jwt }: NewDeviceDialogPro
                             >
                                 <Dialog.Panel className="modal-panel">
                                     <Dialog.Title as="h3" className="text-lg font-semibold text-zinc-100">
-                                        New device
+                                        Pair a device
                                     </Dialog.Title>
                                     <p className="mt-2 text-sm text-zinc-400">
-                                        Register a device in this workspace.
+                                        Generate a registration token, copy it, and enter it on the device. The
+                                        device is created when it pairs.
                                     </p>
-                                    <form className="mt-2" onSubmit={handleSubmit(onSubmit)}>
-                                        <input
-                                            {...register("name", { required: true, minLength: 1 })}
-                                            className="input-field my-3"
-                                            type="text"
-                                            name="name"
-                                            placeholder="Name"
-                                        />
-                                        <textarea
-                                            {...register("description")}
-                                            className="input-field my-3"
-                                            name="description"
-                                            placeholder="Description"
-                                            rows={3}
-                                        />
-                                        {submitError && <p className="mb-3 text-sm text-red-400">{submitError}</p>}
-                                        <div className="mt-4 flex justify-between">
-                                            <button type="button" className="btn-secondary" onClick={closeModal}>
-                                                Cancel
-                                            </button>
-                                            <input type="submit" value="Create" className="btn-primary cursor-pointer" />
+
+                                    {pairing ? (
+                                        <div className="mt-4 text-left">
+                                            <p className="text-xs uppercase tracking-wide text-zinc-500">
+                                                Registration token
+                                            </p>
+                                            <p className="mt-2 break-all rounded-xl bg-gnosis-raised px-3 py-2 font-mono text-sm text-emerald-300">
+                                                {pairing.token}
+                                            </p>
+                                            <p className="mt-2 text-xs text-zinc-500">
+                                                Expires {new Date(pairing.expires_at).toLocaleString()}
+                                            </p>
+                                            {copied && (
+                                                <p className="mt-2 text-xs text-emerald-400">Copied</p>
+                                            )}
                                         </div>
-                                    </form>
+                                    ) : null}
+
+                                    {error && <p className="mt-3 text-sm text-red-400">{error}</p>}
+
+                                    <div className="mt-4 flex justify-between">
+                                        <button type="button" className="btn-secondary" onClick={closeModal}>
+                                            Close
+                                        </button>
+                                        {pairing ? (
+                                            <button
+                                                type="button"
+                                                className="btn-primary"
+                                                onClick={() => copyToken(pairing.token)}
+                                            >
+                                                Copy token
+                                            </button>
+                                        ) : (
+                                            <button
+                                                type="button"
+                                                className="btn-primary"
+                                                disabled={busy}
+                                                onClick={generateToken}
+                                            >
+                                                {busy ? "…" : "Generate token"}
+                                            </button>
+                                        )}
+                                    </div>
                                 </Dialog.Panel>
                             </Transition.Child>
                         </div>

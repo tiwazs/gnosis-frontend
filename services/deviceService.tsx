@@ -1,3 +1,5 @@
+import { apiFetch } from "../lib/apiFetch";
+
 export type Device = {
     id: string;
     workspace_id: string;
@@ -53,8 +55,8 @@ function errorMessage(data: unknown, fallback: string) {
 }
 
 export async function getDevicesByWorkspace(jwt: string, workspaceId: string): Promise<Device[]> {
-    const response = await fetch(
-        iotUrl(`devices/workspace/${encodeURIComponent(workspaceId)}?workspace=${encodeURIComponent(workspaceId)}`),
+    const response = await apiFetch(
+        iotUrl(`devices/workspace/${encodeURIComponent(workspaceId)}`),
         {
             method: "GET",
             credentials: "omit",
@@ -68,30 +70,8 @@ export async function getDevicesByWorkspace(jwt: string, workspaceId: string): P
     return Array.isArray(data) ? data : [];
 }
 
-export async function createDevice(
-    jwt: string,
-    input: { workspaceId: string; name: string; description?: string },
-): Promise<Device> {
-    const response = await fetch(iotUrl("devices"), {
-        method: "POST",
-        credentials: "omit",
-        headers: jwtHeaders(jwt, true),
-        body: JSON.stringify({
-            workspace_id: input.workspaceId,
-            name: input.name,
-            description: input.description ?? "",
-            status: false,
-        }),
-    });
-    const data = await parseJson(response);
-    if (!response.ok) {
-        throw new Error(errorMessage(data, "Could not create device"));
-    }
-    return data as Device;
-}
-
 export async function deleteDevice(jwt: string, deviceId: string): Promise<void> {
-    const response = await fetch(iotUrl(`devices/${encodeURIComponent(deviceId)}`), {
+    const response = await apiFetch(iotUrl(`devices/${encodeURIComponent(deviceId)}`), {
         method: "DELETE",
         credentials: "omit",
         headers: jwtHeaders(jwt),

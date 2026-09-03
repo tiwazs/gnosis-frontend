@@ -1,3 +1,5 @@
+import { apiFetch } from "../lib/apiFetch";
+
 export type Workspace = {
     id: string;
     name: string;
@@ -35,7 +37,7 @@ async function parseJson(response: Response) {
 }
 
 export async function getWorkspaces(jwt: string): Promise<Workspace[]> {
-    const response = await fetch(workspaceUrl("workspaces"), {
+    const response = await apiFetch(workspaceUrl("workspaces"), {
         method: "GET",
         credentials: "omit",
         headers: jwtHeaders(jwt),
@@ -53,8 +55,36 @@ export async function getWorkspace(jwt: string, id: string): Promise<Workspace |
     return workspaces.find((workspace) => workspace.id === id) ?? null;
 }
 
+export type RegistrationToken = {
+    token: string;
+    workspace_id: string;
+    created_by: string;
+    expires_at: string;
+    used: boolean;
+};
+
+export async function createDeviceRegistrationToken(
+    jwt: string,
+    workspaceId: string,
+): Promise<RegistrationToken> {
+    const response = await apiFetch(
+        workspaceUrl(`workspaces/${encodeURIComponent(workspaceId)}/devices/token`),
+        {
+            method: "POST",
+            credentials: "omit",
+            headers: jwtHeaders(jwt, true),
+        },
+    );
+    const data = await parseJson(response);
+    if (!response.ok) {
+        const message = data && typeof data.error === "string" ? data.error : "Could not generate pairing token";
+        throw new Error(message);
+    }
+    return data as RegistrationToken;
+}
+
 export async function createWorkspace(jwt: string, name: string): Promise<Workspace> {
-    const response = await fetch(workspaceUrl("workspaces"), {
+    const response = await apiFetch(workspaceUrl("workspaces"), {
         method: "POST",
         credentials: "omit",
         headers: jwtHeaders(jwt, true),

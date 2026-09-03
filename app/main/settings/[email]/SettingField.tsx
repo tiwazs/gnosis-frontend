@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { apiFetch } from "../../../../lib/apiFetch";
 
 interface SettingFieldProps {
     userId: string;
@@ -35,7 +36,7 @@ const SettingField = ({ userId, jwt, label, field, value, description, password 
         setStatus(null);
         try {
             const gateway = (process.env.NEXT_PUBLIC_API_URL || "").replace(/\/$/, "");
-            const response = await fetch(`${gateway}/api/user/id/${userId}`, {
+            const response = await apiFetch(`${gateway}/api/user/id/${userId}`, {
                 method: "PUT",
                 credentials: "omit",
                 headers: {
