@@ -14,7 +14,7 @@ const ProfilePage = ( {params: {groupId}}: GroupPageProps ) => {
     //const { data: session, status } = useSession({ required: true });
     const { data: session, status } = useRequireSession();
 
-    if(status === "loading" || status === "unauthenticated") return <div className="text-emerald-400/80">Loading...</div>  
+    if(status === "loading" || status === "unauthenticated" || !session) return <div className="text-emerald-400/80">Loading...</div>  
 
     return (
         <>                          

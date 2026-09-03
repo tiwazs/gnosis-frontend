@@ -9,7 +9,7 @@ const FaceRecognitionSelector: NextPage = () => {
     const [ option, setOption ] = useState<string>("live");
     const { data: session, status } = useRequireSession();
     
-    if(status === "loading" || status === "unauthenticated") return <div className="text-emerald-400/80">Loading...</div> 
+    if(status === "loading" || status === "unauthenticated" || !session) return <div className="text-emerald-400/80">Loading...</div> 
     
     const selectOption = (option:string) => {
         setOption(option);
